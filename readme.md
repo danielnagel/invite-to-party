@@ -1,0 +1,114 @@
+# Invite to Party
+
+<p align="center">
+  <img src="frontend/public/logo.default.svg" alt="Logo" width="96" height="96">
+</p>
+
+Self-hosted invite-only RSVP tool: a host creates parties (name, vanity URL
+slug, background images, event date) and guest invites; each guest gets an
+invite code as their only credential, opens it at `/` or a party's vanity
+path, and can accept or decline (with an optional companion) until the
+party's date passes — no guest accounts, no self-registration.
+
+**Try out the demo:** a live demo instance is not deployed yet — run
+`MODE=demo docker compose up --build` locally to explore the seeded demo
+host/party/invites. Host-side mutations (party/invite/image CRUD) are
+disabled in demo mode; the guest RSVP flow stays fully interactive.
+
+## Architecture
+
+Monorepo with npm workspaces (`frontend`, `backend`, `e2e`):
+
+- **`backend/`** – Node.js + Express API under `/api`, PostgreSQL via `pg`
+  and `node-pg-migrate` for versioned migrations. Host-only JWT login, with
+  the token set as an httpOnly cookie (no `localStorage`); guests
+  authenticate purely via their invite code. Details, API list and CLI
+  commands: [`backend/README.md`](backend/README.md).
+- **`frontend/`** – Vue 3 + Vite + Tailwind CSS, Pinia for the host auth
+  store, Vue Router. Component overview: [`frontend/README.md`](frontend/README.md).
+- **`e2e/`** – Playwright end-to-end tests against the full stack spun up
+  via Docker Compose.
+
+In production, nginx (in the frontend container) serves the built frontend
+files and proxies requests to `/api` to the backend container (see
+`frontend/nginx.conf`, `frontend/Dockerfile`).
+
+## Local development (without a Docker rebuild cycle)
+
+Prerequisite: Node.js 22, a running Postgres (easiest via Docker Compose,
+see below).
+
+```bash
+npm install                # once, installs all workspaces
+cp .env.example .env       # adjust Postgres credentials/JWT_SECRET
+docker compose up db       # start only Postgres
+```
+
+Then develop with hot reload in two terminals:
+
+```bash
+npm run dev --workspace=backend    # nodemon, Express API on port 3000
+npm run dev --workspace=frontend   # Vite dev server, proxies /api to port 3000
+```
+
+Run the backend migrations before the first start (details in
+[`backend/README.md`](backend/README.md)):
+
+```bash
+npm run migrate --workspace=backend
+```
+
+The frontend is then reachable at the address Vite prints (default:
+`http://localhost:5173`), the backend at `http://localhost:3000`.
+
+## Docker Compose setup
+
+For a production-like full stack (Postgres + backend + nginx/frontend) at
+the repo root:
+
+```bash
+cp .env.example .env   # if not already done
+docker compose up --build
+```
+
+This starts three services:
+
+- `db` – `postgres:16-alpine` with a persistent `postgres-data` volume.
+- `backend` – the Express API (migrations run on startup, see
+  `backend/Dockerfile`), uploaded party images stored in a separate
+  `uploads-data` volume.
+- `frontend` – multi-stage build (Vite build → `nginx:alpine`), serves the
+  static files and proxies `/api` to `backend`.
+
+The app is then reachable at `http://localhost` (port configurable via
+`FRONTEND_PORT` in `.env`). For host management (creating a host account,
+seeding demo data) in the running container see
+[`backend/README.md`](backend/README.md).
+
+## Tests
+
+- Backend: `npm test --workspace=backend` (Vitest + Supertest against an
+  **isolated** test Postgres instance, migrations run automatically
+  beforehand via `pretest`). Before the first run, start
+  `docker compose --profile test up -d db-test` once – details and
+  background (protection against accidentally wiping the dev DB) in
+  [`backend/README.md`](backend/README.md).
+- Frontend: `npm test --workspace=frontend` (Vitest + Testing Library).
+- E2E: `npm run test:e2e` (Playwright, expects a running stack, e.g. via
+  `docker compose up --build -d`).
+- Lint (all workspaces incl. `e2e`): `npm run lint`.
+
+The GitHub Action under `.github/workflows/ci.yml` runs all four jobs on
+every push/PR against `main`, plus a `publish` job on `main`.
+
+## Further documentation
+
+- [`backend/README.md`](backend/README.md) – API endpoints, migrations,
+  CLI commands (host creation, demo seeding).
+- [`frontend/README.md`](frontend/README.md) – component overview, dev
+  commands.
+
+## License
+
+This project is licensed under the PolyForm Noncommercial License 1.0.0, see
+[`LICENSE`](LICENSE).

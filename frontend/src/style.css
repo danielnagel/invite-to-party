@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  /* No background color here: BackgroundLayer.vue (fixed, behind everything)
+     owns the neutral color / random party image so it's visible through the
+     rest of the app. */
+  @apply text-primary;
+}

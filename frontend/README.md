@@ -21,10 +21,10 @@ on port 3000 (`npm run dev --workspace=backend`).
 - **`App.vue`** – root component: `BackgroundLayer` behind everything, then
   `AppHeader`/`router-view`/`AppFooter` on top, so the background is visible
   on every page.
-- **`router/index.js`** – routes `/rsvp` (guest, requires a verified invite
+- **`router/index.js`** – routes `/guest` (guest, requires a verified invite
   code), `/invite` (host login), `/invite/parties`, `/invite/parties/:id`
   (both host-only) and `/` (guest entry). `/:slug` is registered **last** as
-  a catch-all vanity-URL route so it never shadows `/invite*`/`/rsvp`. Two
+  a catch-all vanity-URL route so it never shadows `/invite*`/`/guest`. Two
   navigation guards: `meta.requiresAuth` (host session via
   `stores/hostAuth.js`) and `meta.requiresGuest` (verified invite code via
   `stores/guestSession.js`, restored from `sessionStorage` on reload).
@@ -32,7 +32,7 @@ on port 3000 (`npm run dev --workspace=backend`).
   `fetchCurrentHost()` checks `GET /api/auth/me` on app start. No
   register/reset-password – hosts are CLI-only (`backend/src/cli`).
 - **`stores/guestSession.js`** (Pinia) – a guest's resolved invite: the code
-  itself is kept in `sessionStorage` so a reload on `/rsvp` re-resolves it
+  itself is kept in `sessionStorage` so a reload on `/guest` re-resolves it
   instead of bouncing back to the entry form; `verify(code)` calls the
   public lookup endpoint, `respond(status, companion)` submits/updates the
   RSVP.
@@ -44,7 +44,7 @@ on port 3000 (`npm run dev --workspace=backend`).
   code form that auto-submits when `?invite-code=` is present. On the
   vanity-slug route it also checks that the resolved party's slug matches
   the URL, rejecting codes that belong to a different party.
-- **`views/GuestRsvpView.vue`** – greets the guest, shows the optional
+- **`views/GuestView.vue`** – greets the guest, shows the optional
   greeting text, accept/decline buttons with the party's own labels, a
   companion checkbox (only if the party's `companion_field_visible` **and**
   this invite's `allow_companion` are both true), resubmittable until the

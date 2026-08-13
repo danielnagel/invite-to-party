@@ -1,13 +1,15 @@
 <script setup>
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { useHostAuthStore } from '../stores/hostAuth';
 
 const hostAuth = useHostAuthStore();
 const router = useRouter();
+const route = useRoute();
 
 const homeLink = computed(() => (hostAuth.isAuthenticated ? '/invite/parties' : '/'));
+const isGuestPage = computed(() => route.name === 'guest');
 
 async function handleLogout() {
   await hostAuth.logout();
@@ -16,7 +18,10 @@ async function handleLogout() {
 </script>
 
 <template>
-  <header class="hidden md:flex items-center px-6 py-4 bg-secondary text-primary">
+  <header
+    v-if="!isGuestPage"
+    class="hidden md:flex items-center px-6 py-4 bg-secondary text-primary"
+  >
     <router-link
       :to="homeLink"
       class="flex items-center gap-3"

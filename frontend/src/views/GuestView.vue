@@ -27,7 +27,7 @@ async function respond(status) {
 </script>
 
 <template>
-  <main class="flex flex-col items-center px-4 py-10">
+  <main class="flex flex-col items-center justify-center px-4 py-10">
     <div class="w-full max-w-md bg-black/60 rounded-lg p-6 flex flex-col gap-6">
       <div>
         <h1 class="text-2xl font-semibold">
@@ -61,7 +61,7 @@ async function respond(status) {
           <span>{{ guestSession.party.companion_field_label }}</span>
         </label>
 
-        <div class="flex gap-3">
+        <div class="flex justify-center gap-3">
           <button
             type="button"
             class="rounded px-4 py-2 disabled:opacity-50"

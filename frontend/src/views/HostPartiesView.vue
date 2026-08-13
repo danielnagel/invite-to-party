@@ -77,14 +77,17 @@ onMounted(loadParties);
       <li
         v-for="party in parties"
         :key="party.id"
-        class="bg-black/60 rounded-lg p-4"
+        class="bg-black/60 rounded-lg hover:bg-black/80 transition-colors"
       >
         <router-link
           :to="`/invite/parties/${party.id}`"
-          class="flex items-center justify-between"
+          class="flex items-center justify-between gap-3 p-4"
         >
           <span class="font-medium">{{ party.name }}</span>
-          <span class="text-sm text-primary/70">{{ formatDate(party.event_date) }}</span>
+          <span class="flex items-center gap-2 text-sm text-primary/70">
+            {{ formatDate(party.event_date) }}
+            <span aria-hidden="true">→</span>
+          </span>
         </router-link>
       </li>
       <li

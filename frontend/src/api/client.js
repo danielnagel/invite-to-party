@@ -53,7 +53,7 @@ async function request(path, { method = 'GET', body, params, headers } = {}) {
     // means "not logged in yet" and is handled by the caller
     // (hostAuthStore.fetchCurrentUser), not a session that expired mid-use,
     // so it must not force a redirect - otherwise visiting a public route
-    // like `/`, `/:slug` or `/rsvp` without a host session cookie would race
+    // like `/`, `/:slug` or `/guest` without a host session cookie would race
     // with the navigation that's already in progress.
     if (path !== '/auth/me' && router.currentRoute.value.path !== '/invite') {
       router.push('/invite');

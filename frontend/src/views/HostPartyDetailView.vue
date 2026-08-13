@@ -110,6 +110,15 @@ onMounted(() => {
 
 <template>
   <main class="flex flex-col gap-8 px-4 py-8 max-w-3xl mx-auto w-full">
+    <div class="flex justify-end">
+      <router-link
+        to="/invite/parties"
+        class="text-sm text-primary/70 hover:text-primary hover:underline"
+      >
+        ← Back to parties
+      </router-link>
+    </div>
+
     <p
       v-if="errorMessage"
       class="text-red-400 text-sm"

@@ -5,9 +5,9 @@ import { useGuestSessionStore } from '../stores/guestSession';
 
 const routes = [
   {
-    path: '/rsvp',
-    name: 'guest-rsvp',
-    component: () => import('../views/GuestRsvpView.vue'),
+    path: '/guest',
+    name: 'guest',
+    component: () => import('../views/GuestView.vue'),
     meta: { requiresGuest: true },
   },
   {
@@ -33,7 +33,7 @@ const routes = [
     component: () => import('../views/GuestEntryView.vue'),
   },
   // Vanity party URL (e.g. /wedding). Registered last so it never shadows
-  // /invite, /invite/parties, /rsvp etc.
+  // /invite, /invite/parties, /guest etc.
   {
     path: '/:slug',
     name: 'guest-entry-party',

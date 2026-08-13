@@ -22,7 +22,7 @@ function createTestRouter() {
     routes: [
       { path: '/', name: 'guest-entry', component: GuestEntryView },
       { path: '/:slug', name: 'guest-entry-party', component: GuestEntryView },
-      { path: '/rsvp', name: 'guest-rsvp', component: { template: '<div>RSVP</div>' } },
+      { path: '/guest', name: 'guest', component: { template: '<div>RSVP</div>' } },
     ],
   });
 }
@@ -43,7 +43,7 @@ describe('GuestEntryView', () => {
     apiClient.get.mockReset();
   });
 
-  it('auto-submits when ?invite-code= is present and navigates to /rsvp', async () => {
+  it('auto-submits when ?invite-code= is present and navigates to /guest', async () => {
     apiClient.get.mockResolvedValueOnce(lookupResponse);
     const router = createTestRouter();
     router.push('/?invite-code=abc123');
@@ -51,7 +51,7 @@ describe('GuestEntryView', () => {
 
     render(GuestEntryView, { global: { plugins: [router] } });
 
-    await waitFor(() => expect(router.currentRoute.value.path).toBe('/rsvp'));
+    await waitFor(() => expect(router.currentRoute.value.path).toBe('/guest'));
     expect(apiClient.get).toHaveBeenCalledWith('/invites/lookup', { code: 'abc123' });
   });
 

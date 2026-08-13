@@ -27,7 +27,7 @@ async function submit() {
       return;
     }
 
-    router.push('/rsvp');
+    router.push('/guest');
   } catch {
     errorMessage.value = 'Invalid or unknown invite code.';
   } finally {

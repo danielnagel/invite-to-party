@@ -70,7 +70,7 @@ test('Host creates a party and an invite, guest accepts with a companion then sw
   const guestContext = await browser.newContext();
   const guestPage = await guestContext.newPage();
   await guestPage.goto(`/?invite-code=${invite.invite_code}`);
-  await guestPage.waitForURL((url) => url.pathname === '/rsvp');
+  await guestPage.waitForURL((url) => url.pathname === '/guest');
   await expect(guestPage.getByText(guestName)).toBeVisible();
   await expect(guestPage.getByText(greetingText)).toBeVisible();
 

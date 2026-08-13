@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/vue';
 import { createPinia, setActivePinia } from 'pinia';
 
-import GuestRsvpView from './GuestRsvpView.vue';
+import GuestView from './GuestView.vue';
 import { useGuestSessionStore } from '../stores/guestSession';
 
 const { apiClient } = vi.hoisted(() => ({
@@ -40,7 +40,7 @@ function seedGuestSession(overrides = {}) {
   return store;
 }
 
-describe('GuestRsvpView', () => {
+describe('GuestView', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     apiClient.post.mockReset();
@@ -48,7 +48,7 @@ describe('GuestRsvpView', () => {
 
   it('greets the guest by name and shows the greeting text', () => {
     seedGuestSession();
-    render(GuestRsvpView);
+    render(GuestView);
 
     expect(screen.getByText('Hello Anna')).toBeInTheDocument();
     expect(screen.getByText('So happy you can join us!')).toBeInTheDocument();
@@ -56,7 +56,7 @@ describe('GuestRsvpView', () => {
 
   it('shows the companion field only when the party and the invite both allow it', () => {
     seedGuestSession({ allowCompanion: false });
-    render(GuestRsvpView);
+    render(GuestView);
 
     expect(screen.queryByText('Bringing someone?')).not.toBeInTheDocument();
   });
@@ -64,7 +64,7 @@ describe('GuestRsvpView', () => {
   it('submits the accept response with the party-specific label', async () => {
     apiClient.post.mockResolvedValueOnce({ status: 'accepted', companion_response: true, expired: false });
     seedGuestSession();
-    render(GuestRsvpView);
+    render(GuestView);
 
     await fireEvent.click(screen.getByRole('checkbox'));
     await fireEvent.click(screen.getByRole('button', { name: 'Yes, count me in' }));
@@ -74,7 +74,7 @@ describe('GuestRsvpView', () => {
 
   it('shows a plain expired state instead of the RSVP form', () => {
     seedGuestSession({ expired: true });
-    render(GuestRsvpView);
+    render(GuestView);
 
     expect(screen.getByText(/already took place/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Yes, count me in' })).not.toBeInTheDocument();

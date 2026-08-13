@@ -4,7 +4,7 @@ import { apiClient } from '../api/client';
 
 // Guest identity is just the invite code (no account, see backend
 // invites.js public endpoints). The code is kept in sessionStorage so a
-// page reload on /rsvp re-resolves the same invite instead of bouncing the
+// page reload on /guest re-resolves the same invite instead of bouncing the
 // guest back to the entry form.
 const STORAGE_KEY = 'invite-to-party.invite-code';
 

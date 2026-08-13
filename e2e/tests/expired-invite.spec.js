@@ -56,7 +56,7 @@ test('An invite in a party with a past event date shows the expired state and re
   const guestContext = await browser.newContext();
   const guestPage = await guestContext.newPage();
   await guestPage.goto(`/?invite-code=${invite.invite_code}`);
-  await guestPage.waitForURL((url) => url.pathname === '/rsvp');
+  await guestPage.waitForURL((url) => url.pathname === '/guest');
   await expect(guestPage.getByText(/expired/i)).toBeVisible();
 
   // Backend enforcement: rejects an RSVP change even if attempted directly,

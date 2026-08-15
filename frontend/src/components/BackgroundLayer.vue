@@ -44,6 +44,8 @@ watch(
 );
 
 // Static cover/center, no zoom animation - see project plan.
+// No uploaded photo yet (not verified, or the party/host has none): fall
+// back to the generic repeating party-symbol pattern instead of a photo.
 const backgroundStyle = computed(() =>
   imageUrl.value
     ? {
@@ -51,13 +53,17 @@ const backgroundStyle = computed(() =>
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }
-    : {},
+    : {
+        backgroundImage: 'url(/party-pattern-background.svg)',
+        backgroundRepeat: 'repeat',
+        backgroundSize: '240px 240px',
+      },
 );
 </script>
 
 <template>
   <div
-    class="fixed inset-0 -z-10 bg-secondary"
+    class="fixed inset-0 -z-10"
     :style="backgroundStyle"
   />
 </template>

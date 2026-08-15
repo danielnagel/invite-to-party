@@ -23,10 +23,10 @@ describe('BackgroundLayer', () => {
     apiClient.get.mockReset();
   });
 
-  it('stays neutral (no background-image) before verification', () => {
+  it('shows the generic party pattern (no photo) before verification', () => {
     const { container } = render(BackgroundLayer);
 
-    expect(container.firstChild.style.backgroundImage).toBe('');
+    expect(container.firstChild.style.backgroundImage).toContain('/party-pattern-background.svg');
     expect(apiClient.get).not.toHaveBeenCalled();
   });
 
@@ -41,7 +41,7 @@ describe('BackgroundLayer', () => {
     await waitFor(() => expect(container.firstChild.style.backgroundImage).toContain('/api/images/img-1/file'));
   });
 
-  it('falls back to the neutral color when the party has no images', async () => {
+  it('falls back to the generic party pattern when the party has no images', async () => {
     apiClient.get.mockRejectedValueOnce(new Error('no images'));
     const guestSession = useGuestSessionStore();
     guestSession.$patch({ party: { id: 'party-1', slug: 'summer' } });
@@ -49,7 +49,7 @@ describe('BackgroundLayer', () => {
     const { container } = render(BackgroundLayer);
 
     await waitFor(() => expect(apiClient.get).toHaveBeenCalled());
-    expect(container.firstChild.style.backgroundImage).toBe('');
+    expect(container.firstChild.style.backgroundImage).toContain('/party-pattern-background.svg');
   });
 
   it('uses the host-wide random background endpoint for a logged-in host', async () => {

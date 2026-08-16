@@ -18,6 +18,7 @@ export const useGuestSessionStore = defineStore('guestSession', {
     companionResponse: null,
     expired: false,
     party: null,
+    isPreview: false,
   }),
 
   getters: {
@@ -35,6 +36,24 @@ export const useGuestSessionStore = defineStore('guestSession', {
       this.expired = data.expired;
       this.party = data.party;
       sessionStorage.setItem(STORAGE_KEY, code);
+    },
+
+    /**
+     * Lets a host see the guest RSVP page for a party without a real invite
+     * code (see GET /parties/:id/preview). respond() below skips the network
+     * call while this is active, since there's no invite behind it to save to.
+     */
+    async loadPreview(partyId) {
+      const data = await apiClient.get(`/parties/${partyId}/preview`);
+      this.code = null;
+      this.guestName = data.guest_name;
+      this.greetingText = data.greeting_text;
+      this.allowCompanion = data.allow_companion;
+      this.status = data.status;
+      this.companionResponse = data.companion_response;
+      this.expired = data.expired;
+      this.party = data.party;
+      this.isPreview = true;
     },
 
     /** Resolves an invite code via the public lookup endpoint. */
@@ -59,6 +78,12 @@ export const useGuestSessionStore = defineStore('guestSession', {
     },
 
     async respond(status, companion) {
+      if (this.isPreview) {
+        this.status = status;
+        this.companionResponse = companion;
+        return;
+      }
+
       try {
         const data = await apiClient.post(`/invites/${this.code}/rsvp`, { status, companion });
         this.status = data.status;

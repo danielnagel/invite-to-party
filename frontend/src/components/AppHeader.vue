@@ -9,7 +9,7 @@ const router = useRouter();
 const route = useRoute();
 
 const homeLink = computed(() => (hostAuth.isAuthenticated ? '/invite/parties' : '/'));
-const isGuestPage = computed(() => route.name === 'guest');
+const isGuestPage = computed(() => route.name === 'guest' || route.name === 'host-party-preview');
 
 async function handleLogout() {
   await hostAuth.logout();

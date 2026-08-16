@@ -133,6 +133,45 @@ describe('GET /api/parties/:id', () => {
   });
 });
 
+describe('GET /api/parties/:id/preview', () => {
+  it('returns a guest-facing preview payload with a placeholder guest name', async () => {
+    const { agent } = await createAndLoginHost();
+    const party = await insertParty({
+      name: 'Summer Party',
+      accept_label: "We'll be there",
+      companion_field_visible: true,
+    });
+
+    const response = await agent.get(`/api/parties/${party.id}/preview`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.guest_name).toBe('Guest Name');
+    expect(response.body.status).toBe('pending');
+    expect(response.body.expired).toBe(false);
+    expect(response.body.party.id).toBe(party.id);
+    expect(response.body.party.name).toBe('Summer Party');
+    expect(response.body.party.accept_label).toBe("We'll be there");
+  });
+
+  it('flags a past event as expired', async () => {
+    const { agent } = await createAndLoginHost();
+    const party = await insertParty({ event_date: '2000-01-01' });
+
+    const response = await agent.get(`/api/parties/${party.id}/preview`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.expired).toBe(true);
+  });
+
+  it('returns 404 for an unknown party', async () => {
+    const { agent } = await createAndLoginHost();
+
+    const response = await agent.get('/api/parties/00000000-0000-0000-0000-000000000000/preview');
+
+    expect(response.status).toBe(404);
+  });
+});
+
 describe('PUT /api/parties/:id', () => {
   it('updates a party', async () => {
     const { agent } = await createAndLoginHost();

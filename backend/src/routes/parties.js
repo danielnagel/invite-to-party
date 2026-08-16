@@ -58,6 +58,40 @@ router.get('/parties/:id', requireAuth, async (req, res) => {
   return res.status(200).json(rows[0]);
 });
 
+// Lets a host see the guest-facing RSVP page without needing a real invite
+// code. Returns the same shape as GET /invites/lookup, standing in a
+// placeholder guest name since previews aren't tied to any actual invite.
+router.get('/parties/:id/preview', requireAuth, async (req, res) => {
+  const { rows } = await pool.query(
+    `SELECT ${PARTY_COLUMNS}, (event_date < CURRENT_DATE) AS expired FROM parties WHERE id = $1`,
+    [req.params.id],
+  );
+
+  if (rows.length === 0) {
+    return res.status(404).json({ error: 'party_not_found' });
+  }
+
+  const party = rows[0];
+  return res.status(200).json({
+    guest_name: 'Guest Name',
+    greeting_text: null,
+    allow_companion: true,
+    status: 'pending',
+    companion_response: null,
+    expired: party.expired,
+    party: {
+      id: party.id,
+      name: party.name,
+      slug: party.slug,
+      event_date: party.event_date,
+      accept_label: party.accept_label,
+      decline_label: party.decline_label,
+      companion_field_label: party.companion_field_label,
+      companion_field_visible: party.companion_field_visible,
+    },
+  });
+});
+
 router.post('/parties', requireAuth, blockInDemoMode, async (req, res) => {
   const body = req.body ?? {};
 

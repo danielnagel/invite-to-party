@@ -30,6 +30,11 @@ describe('access protection without a token', () => {
     expect(response.status).toBe(401);
   });
 
+  it('rejects GET /api/parties/:id/preview without a session', async () => {
+    const response = await request(app).get('/api/parties/00000000-0000-0000-0000-000000000000/preview');
+    expect(response.status).toBe(401);
+  });
+
   it('rejects requests with a garbage token cookie', async () => {
     const response = await request(app)
       .get('/api/parties')

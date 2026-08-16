@@ -7,7 +7,9 @@ import { useGuestSessionStore } from '../stores/guestSession';
 const guestSession = useGuestSessionStore();
 
 // The admin (host) area always shows the generic pattern - only a verified
-// guest, scoped to one party, ever gets a photo background.
+// guest, scoped to one party, ever gets a photo background. A host previewing
+// a party's guest page (see GuestPreviewView) also counts as "verified" here,
+// since guestSession is populated the same way for both.
 const verified = computed(() => guestSession.isVerified);
 
 const imageUrl = ref(null);

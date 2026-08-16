@@ -110,12 +110,18 @@ onMounted(() => {
 
 <template>
   <main class="flex flex-col gap-8 px-4 py-8 max-w-3xl mx-auto w-full">
-    <div class="flex justify-end">
+    <div class="flex items-center justify-between bg-black/60 rounded-lg px-4 py-3">
       <router-link
         to="/invite/parties"
-        class="text-sm text-primary/70 hover:text-primary hover:underline"
+        class="text-sm font-medium text-primary hover:text-accent hover:underline"
       >
         ← Back to parties
+      </router-link>
+      <router-link
+        :to="`/invite/parties/${partyId}/preview`"
+        class="text-sm font-medium text-primary hover:text-accent hover:underline"
+      >
+        Preview guest page →
       </router-link>
     </div>
 

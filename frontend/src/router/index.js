@@ -28,6 +28,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/invite/parties/:id/preview',
+    name: 'host-party-preview',
+    component: () => import('../views/GuestPreviewView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/',
     name: 'guest-entry',
     component: () => import('../views/GuestEntryView.vue'),

@@ -20,11 +20,11 @@ test('An invite in a party with a past event date shows the expired state and re
   const pastEventDate = '2020-01-01';
   const guestName = `E2E Expired Guest ${Date.now()}`;
 
-  await page.goto('/invite');
+  await page.goto('/');
   await page.getByLabel('Username').fill(hostUsername);
   await page.getByLabel('Password').fill(hostPassword);
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.waitForURL((url) => url.pathname === '/invite/parties');
+  await page.waitForURL((url) => url.pathname === '/parties');
 
   await page.getByLabel('Name').fill(partyName);
   await page.getByLabel('Slug').fill(partySlug);
@@ -36,7 +36,7 @@ test('An invite in a party with a past event date shows the expired state and re
   await page.getByRole('button', { name: 'Create party' }).click();
   const party = await (await createPartyResponse).json();
 
-  await page.goto(`/invite/parties/${party.id}`);
+  await page.goto(`/parties/${party.id}`);
   await page.getByLabel('Guest name').fill(guestName);
   await page.getByLabel('Greeting text').fill('See you soon!');
   const createInviteResponse = page.waitForResponse(
@@ -55,7 +55,7 @@ test('An invite in a party with a past event date shows the expired state and re
   // Guest UI: opens the invite link and only sees the expired state.
   const guestContext = await browser.newContext();
   const guestPage = await guestContext.newPage();
-  await guestPage.goto(`/?invite-code=${invite.invite_code}`);
+  await guestPage.goto(`/${partySlug}?invite-code=${invite.invite_code}`);
   await guestPage.waitForURL((url) => url.pathname === '/guest');
   await expect(guestPage.getByText(/expired/i)).toBeVisible();
 

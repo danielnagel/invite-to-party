@@ -21,9 +21,9 @@ async function submit() {
   try {
     await guestSession.verify(code.value);
 
-    // On a party's vanity path (e.g. /wedding), the code must actually
-    // belong to that party.
-    if (route.params.slug && guestSession.party.slug !== route.params.slug) {
+    // The code must actually belong to the party behind this vanity path
+    // (e.g. /wedding).
+    if (guestSession.party.slug !== route.params.slug) {
       guestSession.clear();
       errorMessage.value = t('guestEntry.errorWrongParty');
       return;

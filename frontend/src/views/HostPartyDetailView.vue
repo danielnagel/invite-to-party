@@ -100,7 +100,7 @@ async function confirmDeleteInvite() {
 async function confirmDeleteParty() {
   try {
     await apiClient.delete(`/parties/${partyId}`);
-    router.push('/invite/parties');
+    router.push('/parties');
   } catch {
     errorMessage.value = t('hostPartyDetail.errorDeleteParty');
   }
@@ -116,14 +116,14 @@ onMounted(() => {
   <main class="flex flex-col gap-8 px-4 py-8 max-w-3xl mx-auto w-full">
     <div class="flex items-center justify-between bg-black/60 rounded-lg px-4 py-3">
       <router-link
-        to="/invite/parties"
+        to="/parties"
         class="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-accent hover:underline"
       >
         <IconArrowLeft class="w-4 h-4" />
         {{ t('hostPartyDetail.backToParties') }}
       </router-link>
       <router-link
-        :to="`/invite/parties/${partyId}/preview`"
+        :to="`/parties/${partyId}/preview`"
         class="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-accent hover:underline"
       >
         {{ t('hostPartyDetail.previewGuestPage') }}

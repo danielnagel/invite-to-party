@@ -68,7 +68,7 @@ describe('GuestPreviewView', () => {
     expect(screen.getByText(/responses here are not saved/)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Back to admin/ })).toHaveAttribute(
       'href',
-      '/invite/parties/party-1',
+      '/parties/party-1',
     );
   });
 

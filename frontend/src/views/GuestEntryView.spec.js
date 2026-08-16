@@ -21,7 +21,6 @@ function createTestRouter() {
   return createRouter({
     history: createMemoryHistory(),
     routes: [
-      { path: '/', name: 'guest-entry', component: GuestEntryView },
       { path: '/:slug', name: 'guest-entry-party', component: GuestEntryView },
       { path: '/guest', name: 'guest', component: { template: '<div>RSVP</div>' } },
     ],
@@ -47,7 +46,7 @@ describe('GuestEntryView', () => {
   it('auto-submits when ?invite-code= is present and navigates to /guest', async () => {
     apiClient.get.mockResolvedValueOnce(lookupResponse);
     const router = createTestRouter();
-    router.push('/?invite-code=abc123');
+    router.push('/summer?invite-code=abc123');
     await router.isReady();
 
     render(GuestEntryView, { global: { plugins: [router, i18n] } });
@@ -59,7 +58,7 @@ describe('GuestEntryView', () => {
   it('shows an error for an unknown invite code', async () => {
     apiClient.get.mockRejectedValueOnce(new Error('not found'));
     const router = createTestRouter();
-    router.push('/');
+    router.push('/summer');
     await router.isReady();
 
     render(GuestEntryView, { global: { plugins: [router, i18n] } });
@@ -68,7 +67,7 @@ describe('GuestEntryView', () => {
     await fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
 
     expect(await screen.findByText('Invalid or unknown invite code.')).toBeInTheDocument();
-    expect(router.currentRoute.value.path).toBe('/');
+    expect(router.currentRoute.value.path).toBe('/summer');
   });
 
   it('rejects a code that resolves to a different party than the vanity slug', async () => {

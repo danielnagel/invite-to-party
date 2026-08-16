@@ -22,10 +22,11 @@ on port 3000 (`npm run dev --workspace=backend`).
   `AppHeader`/`router-view`/`AppFooter` on top, so the background is visible
   on every page.
 - **`router/index.js`** – routes `/guest` (guest, requires a verified invite
-  code), `/invite` (host login), `/invite/parties`, `/invite/parties/:id`
-  (both host-only) and `/` (guest entry). `/:slug` is registered **last** as
-  a catch-all vanity-URL route so it never shadows `/invite*`/`/guest`. Two
-  navigation guards: `meta.requiresAuth` (host session via
+  code), `/` (host login), `/parties`, `/parties/:id` (both host-only).
+  `/:slug` is registered **last** as a catch-all vanity-URL route so it never
+  shadows `/`, `/parties`, `/guest` - it's the only entry point for guests,
+  who always reach the app via a party's own link (`/<slug>?invite-code=`).
+  Two navigation guards: `meta.requiresAuth` (host session via
   `stores/hostAuth.js`) and `meta.requiresGuest` (verified invite code via
   `stores/guestSession.js`, restored from `sessionStorage` on reload).
 - **`stores/hostAuth.js`** (Pinia) – host session: login/logout,
@@ -37,13 +38,13 @@ on port 3000 (`npm run dev --workspace=backend`).
   public lookup endpoint, `respond(status, companion)` submits/updates the
   RSVP.
 - **`api/client.js`** – fetch wrapper with `credentials: 'include'` (host
-  auth cookie) and centralized `401` handling (redirects to `/invite`,
-  except for the initial `/auth/me` check). Also supports `FormData` bodies
-  (image upload) without JSON-encoding them.
-- **`views/GuestEntryView.vue`** – used for both `/` and `/:slug`; an invite
-  code form that auto-submits when `?invite-code=` is present. On the
-  vanity-slug route it also checks that the resolved party's slug matches
-  the URL, rejecting codes that belong to a different party.
+  auth cookie) and centralized `401` handling (redirects to `/`, the host
+  login, except for the initial `/auth/me` check). Also supports `FormData`
+  bodies (image upload) without JSON-encoding them.
+- **`views/GuestEntryView.vue`** – used for `/:slug`; an invite code form
+  that auto-submits when `?invite-code=` is present, and otherwise lets the
+  guest type one in. Checks that the resolved party's slug matches the URL,
+  rejecting codes that belong to a different party.
 - **`views/GuestView.vue`** – greets the guest, shows the optional
   greeting text, accept/decline buttons with the party's own labels, a
   companion checkbox (only if the party's `companion_field_visible` **and**

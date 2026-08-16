@@ -88,7 +88,7 @@ onMounted(loadParties);
         class="bg-black/60 rounded-lg hover:bg-black/80 transition-colors"
       >
         <router-link
-          :to="`/invite/parties/${party.id}`"
+          :to="`/parties/${party.id}`"
           class="flex items-center justify-between gap-3 p-4"
         >
           <span class="font-medium">{{ party.name }}</span>

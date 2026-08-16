@@ -14,8 +14,8 @@ class ApiError extends Error {
 /**
  * fetch wrapper with `credentials: 'include'` (httpOnly JWT cookie) and
  * centralized 401 handling: on an expired/missing host session, redirects to
- * `/invite`. Guest-facing endpoints never require this cookie, so they never
- * trigger this path.
+ * `/` (host login). Guest-facing endpoints never require this cookie, so
+ * they never trigger this path.
  */
 async function request(path, { method = 'GET', body, params, headers } = {}) {
   let url = `${API_BASE}${path}`;
@@ -53,10 +53,10 @@ async function request(path, { method = 'GET', body, params, headers } = {}) {
     // means "not logged in yet" and is handled by the caller
     // (hostAuthStore.fetchCurrentUser), not a session that expired mid-use,
     // so it must not force a redirect - otherwise visiting a public route
-    // like `/`, `/:slug` or `/guest` without a host session cookie would race
+    // like `/:slug` or `/guest` without a host session cookie would race
     // with the navigation that's already in progress.
-    if (path !== '/auth/me' && router.currentRoute.value.path !== '/invite') {
-      router.push('/invite');
+    if (path !== '/auth/me' && router.currentRoute.value.path !== '/') {
+      router.push('/');
     }
     throw new ApiError('not_authenticated', 401, null);
   }

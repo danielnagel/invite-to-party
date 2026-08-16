@@ -11,7 +11,7 @@ const { t } = useI18n();
 
 async function handleLogout() {
   await hostAuth.logout();
-  router.push('/invite');
+  router.push('/');
 }
 </script>
 

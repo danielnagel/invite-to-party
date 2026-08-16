@@ -11,35 +11,30 @@ const routes = [
     meta: { requiresGuest: true },
   },
   {
-    path: '/invite',
+    path: '/',
     name: 'host-login',
     component: () => import('../views/HostLoginView.vue'),
   },
   {
-    path: '/invite/parties',
+    path: '/parties',
     name: 'host-parties',
     component: () => import('../views/HostPartiesView.vue'),
     meta: { requiresAuth: true },
   },
   {
-    path: '/invite/parties/:id',
+    path: '/parties/:id',
     name: 'host-party-detail',
     component: () => import('../views/HostPartyDetailView.vue'),
     meta: { requiresAuth: true },
   },
   {
-    path: '/invite/parties/:id/preview',
+    path: '/parties/:id/preview',
     name: 'host-party-preview',
     component: () => import('../views/GuestPreviewView.vue'),
     meta: { requiresAuth: true },
   },
-  {
-    path: '/',
-    name: 'guest-entry',
-    component: () => import('../views/GuestEntryView.vue'),
-  },
-  // Vanity party URL (e.g. /wedding). Registered last so it never shadows
-  // /invite, /invite/parties, /guest etc.
+  // Vanity party URL (e.g. /wedding) - the only way a guest reaches the invite
+  // code entry form. Registered last so it never shadows /, /parties, /guest.
   {
     path: '/:slug',
     name: 'guest-entry-party',
@@ -69,7 +64,10 @@ router.beforeEach(async (to) => {
     if (!guestSessionStore.isVerified) {
       const restored = await guestSessionStore.restore();
       if (!restored) {
-        return { name: 'guest-entry' };
+        // No party slug is known at this point (e.g. a stale/direct visit to
+        // /guest), so there's no `/:slug` to send them back to - the guest
+        // always arrives fresh via their own party's link.
+        return { name: 'host-login' };
       }
     }
   }

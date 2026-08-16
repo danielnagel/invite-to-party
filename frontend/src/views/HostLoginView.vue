@@ -23,7 +23,7 @@ async function handleSubmit() {
   isSubmitting.value = true;
   try {
     await hostAuth.login(form.username, form.password);
-    router.push('/invite/parties');
+    router.push('/parties');
   } catch {
     errorMessage.value = t('hostLogin.error');
   } finally {

@@ -12,12 +12,12 @@ const route = useRoute();
 const { t } = useI18n();
 
 const appTitle = import.meta.env.VITE_APP_TITLE || 'Invite to Party';
-const homeLink = computed(() => (hostAuth.isAuthenticated ? '/invite/parties' : '/'));
+const homeLink = computed(() => (hostAuth.isAuthenticated ? '/parties' : '/'));
 const isGuestPage = computed(() => route.name === 'guest' || route.name === 'host-party-preview');
 
 async function handleLogout() {
   await hostAuth.logout();
-  router.push('/invite');
+  router.push('/');
 }
 </script>
 

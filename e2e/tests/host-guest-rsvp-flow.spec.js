@@ -26,11 +26,11 @@ test('Host creates a party and an invite, guest accepts with a companion then sw
   const greetingText = 'We are so happy to celebrate with you!';
 
   // --- Host: log in ---
-  await page.goto('/invite');
+  await page.goto('/');
   await page.getByLabel('Username').fill(hostUsername);
   await page.getByLabel('Password').fill(hostPassword);
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.waitForURL((url) => url.pathname === '/invite/parties');
+  await page.waitForURL((url) => url.pathname === '/parties');
 
   // --- Host: create a party ---
   await page.getByLabel('Name').fill(partyName);
@@ -44,8 +44,8 @@ test('Host creates a party and an invite, guest accepts with a companion then sw
   const party = await (await createPartyResponse).json();
 
   // Party settings (labels, companion field) live on the party's own page
-  // (plan: `/invite/parties/:id`), not on the creation form.
-  await page.goto(`/invite/parties/${party.id}`);
+  // (plan: `/parties/:id`), not on the creation form.
+  await page.goto(`/parties/${party.id}`);
   await page.getByLabel('Accept label').fill(acceptLabel);
   await page.getByLabel('Decline label').fill(declineLabel);
   await page.getByLabel('Companion field label').fill(companionFieldLabel);
@@ -69,7 +69,7 @@ test('Host creates a party and an invite, guest accepts with a companion then sw
   // --- Guest: opens the invite link in their own session and accepts with a companion ---
   const guestContext = await browser.newContext();
   const guestPage = await guestContext.newPage();
-  await guestPage.goto(`/?invite-code=${invite.invite_code}`);
+  await guestPage.goto(`/${partySlug}?invite-code=${invite.invite_code}`);
   await guestPage.waitForURL((url) => url.pathname === '/guest');
   await expect(guestPage.getByText(guestName)).toBeVisible();
   await expect(guestPage.getByText(greetingText)).toBeVisible();

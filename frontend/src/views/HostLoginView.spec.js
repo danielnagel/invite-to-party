@@ -21,11 +21,11 @@ function createTestRouter() {
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [
-      { path: '/invite', name: 'host-login', component: HostLoginView },
-      { path: '/invite/parties', name: 'host-parties', component: { template: '<div>Parties</div>' } },
+      { path: '/', name: 'host-login', component: HostLoginView },
+      { path: '/parties', name: 'host-parties', component: { template: '<div>Parties</div>' } },
     ],
   });
-  router.push('/invite');
+  router.push('/');
   return router;
 }
 
@@ -46,7 +46,7 @@ describe('HostLoginView', () => {
     await fireEvent.update(screen.getByLabelText(/^Password/), 'secret');
     await fireEvent.click(screen.getByRole('button', { name: 'Log in' }));
 
-    await waitFor(() => expect(router.currentRoute.value.path).toBe('/invite/parties'));
+    await waitFor(() => expect(router.currentRoute.value.path).toBe('/parties'));
     expect(apiClient.post).toHaveBeenCalledWith('/auth/login', { username: 'daniel', password: 'secret' });
   });
 
@@ -62,6 +62,6 @@ describe('HostLoginView', () => {
     await fireEvent.click(screen.getByRole('button', { name: 'Log in' }));
 
     expect(await screen.findByText('Login failed. Please check your credentials.')).toBeInTheDocument();
-    expect(router.currentRoute.value.path).toBe('/invite');
+    expect(router.currentRoute.value.path).toBe('/');
   });
 });

@@ -23,6 +23,10 @@ WORKDIR /app/frontend
 ARG VITE_DEFAULT_LOCALE=en
 ENV VITE_DEFAULT_LOCALE=${VITE_DEFAULT_LOCALE}
 
+# Read by frontend/src/components/AppHeader.vue via import.meta.env at build time.
+ARG VITE_APP_TITLE="Invite to Party"
+ENV VITE_APP_TITLE=${VITE_APP_TITLE}
+
 RUN npm run build
 
 # ---- Runtime stage -------------------------------------------------------

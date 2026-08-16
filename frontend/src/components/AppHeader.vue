@@ -11,6 +11,7 @@ const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();
 
+const appTitle = import.meta.env.VITE_APP_TITLE || 'Invite to Party';
 const homeLink = computed(() => (hostAuth.isAuthenticated ? '/invite/parties' : '/'));
 const isGuestPage = computed(() => route.name === 'guest' || route.name === 'host-party-preview');
 
@@ -34,7 +35,7 @@ async function handleLogout() {
         alt="Logo"
         class="h-10 w-10"
       >
-      <span class="text-lg font-semibold">Invite to Party</span>
+      <span class="text-lg font-semibold">{{ appTitle }}</span>
     </router-link>
 
     <template v-if="hostAuth.isAuthenticated">

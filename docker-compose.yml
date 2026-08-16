@@ -78,6 +78,10 @@ services:
         # Default UI language baked into the built SPA (see frontend/Dockerfile
         # and frontend/src/i18n/index.js). Unset falls back to "en".
         VITE_DEFAULT_LOCALE: ${DEFAULT_LOCALE:-en}
+        # App title shown in the header, baked into the built SPA (see
+        # frontend/Dockerfile and frontend/src/components/AppHeader.vue).
+        # Unset falls back to "Invite to Party".
+        VITE_APP_TITLE: ${APP_TITLE:-Invite to Party}
     restart: unless-stopped
     depends_on:
       - backend

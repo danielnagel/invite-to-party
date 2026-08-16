@@ -52,13 +52,13 @@ describe('BackgroundLayer', () => {
     expect(container.firstChild.style.backgroundImage).toContain('/party-pattern-background.svg');
   });
 
-  it('uses the host-wide random background endpoint for a logged-in host', async () => {
-    apiClient.get.mockResolvedValueOnce({ url: '/api/images/img-2/file' });
+  it('always shows the generic party pattern in the admin (host) area, never a photo', () => {
     const hostAuth = useHostAuthStore();
     hostAuth.$patch({ host: { id: '1', username: 'daniel' } });
 
-    render(BackgroundLayer);
+    const { container } = render(BackgroundLayer);
 
-    await waitFor(() => expect(apiClient.get).toHaveBeenCalledWith('/images/random-background'));
+    expect(apiClient.get).not.toHaveBeenCalled();
+    expect(container.firstChild.style.backgroundImage).toContain('/party-pattern-background.svg');
   });
 });

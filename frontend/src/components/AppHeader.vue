@@ -1,12 +1,15 @@
 <script setup>
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 import { useHostAuthStore } from '../stores/hostAuth';
+import LanguageSwitch from './LanguageSwitch.vue';
 
 const hostAuth = useHostAuthStore();
 const router = useRouter();
 const route = useRoute();
+const { t } = useI18n();
 
 const homeLink = computed(() => (hostAuth.isAuthenticated ? '/invite/parties' : '/'));
 const isGuestPage = computed(() => route.name === 'guest' || route.name === 'host-party-preview');
@@ -34,13 +37,16 @@ async function handleLogout() {
       <span class="text-lg font-semibold">Invite to Party</span>
     </router-link>
 
-    <button
-      v-if="hostAuth.isAuthenticated"
-      type="button"
-      class="ml-4 text-xs text-primary/60 hover:underline cursor-pointer"
-      @click="handleLogout"
-    >
-      Log out
-    </button>
+    <template v-if="hostAuth.isAuthenticated">
+      <LanguageSwitch class="ml-4" />
+
+      <button
+        type="button"
+        class="ml-4 text-xs text-primary/60 hover:underline cursor-pointer"
+        @click="handleLogout"
+      >
+        {{ t('app.logout') }}
+      </button>
+    </template>
   </header>
 </template>

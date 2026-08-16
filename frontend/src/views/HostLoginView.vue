@@ -1,12 +1,14 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 import { useHostAuthStore } from '../stores/hostAuth';
 import FormField from '../components/FormField.vue';
 
 const hostAuth = useHostAuthStore();
 const router = useRouter();
+const { t } = useI18n();
 
 const form = reactive({
   username: '',
@@ -23,7 +25,7 @@ async function handleSubmit() {
     await hostAuth.login(form.username, form.password);
     router.push('/invite/parties');
   } catch {
-    errorMessage.value = 'Login failed. Please check your credentials.';
+    errorMessage.value = t('hostLogin.error');
   } finally {
     isSubmitting.value = false;
   }
@@ -34,7 +36,7 @@ async function handleSubmit() {
   <main class="flex flex-col items-center justify-center px-4 py-10">
     <div class="w-full max-w-sm bg-black/60 rounded-lg p-6">
       <h1 class="text-2xl font-semibold mb-6">
-        Host login
+        {{ t('hostLogin.title') }}
       </h1>
 
       <form
@@ -44,14 +46,14 @@ async function handleSubmit() {
         <FormField
           id="username"
           v-model="form.username"
-          label="Username"
+          :label="t('hostLogin.username')"
           type="text"
           required
         />
         <FormField
           id="password"
           v-model="form.password"
-          label="Password"
+          :label="t('hostLogin.password')"
           type="password"
           required
         />
@@ -68,7 +70,7 @@ async function handleSubmit() {
           class="bg-primary text-secondary rounded px-4 py-2 hover:bg-primary/90 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           :disabled="isSubmitting"
         >
-          Log in
+          {{ t('hostLogin.submit') }}
         </button>
       </form>
     </div>

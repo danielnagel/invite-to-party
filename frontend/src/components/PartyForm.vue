@@ -1,5 +1,6 @@
 <script setup>
 import { reactive, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import FormField from './FormField.vue';
 import IconPlus from './icons/IconPlus.vue';
@@ -11,15 +12,16 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['submit']);
+const { t } = useI18n();
 
 function emptyForm() {
   return {
     name: '',
     slug: '',
     event_date: '',
-    accept_label: 'Yes, I will be there',
-    decline_label: "No, I can't make it",
-    companion_field_label: 'Bringing a plus one?',
+    accept_label: t('partyForm.defaultAcceptLabel'),
+    decline_label: t('partyForm.defaultDeclineLabel'),
+    companion_field_label: t('partyForm.defaultCompanionFieldLabel'),
     companion_field_visible: false,
   };
 }
@@ -46,7 +48,7 @@ function handleSubmit() {
     <FormField
       id="name"
       v-model="form.name"
-      label="Name"
+      :label="t('partyForm.name')"
       required
     />
     <!-- Pattern mirrors the backend's SLUG_PATTERN (see
@@ -54,37 +56,37 @@ function handleSubmit() {
     <FormField
       id="slug"
       v-model="form.slug"
-      label="Slug"
+      :label="t('partyForm.slug')"
       pattern="[a-z0-9]+(-[a-z0-9]+)*"
-      hint="Vanity URL, e.g. 'wedding'. Lowercase letters, digits and hyphens only."
+      :hint="t('partyForm.slugHint')"
       required
     />
     <FormField
       id="event_date"
       v-model="form.event_date"
-      label="Event date"
+      :label="t('partyForm.eventDate')"
       type="date"
       required
     />
     <FormField
       id="accept_label"
       v-model="form.accept_label"
-      label="Accept label"
+      :label="t('partyForm.acceptLabel')"
     />
     <FormField
       id="decline_label"
       v-model="form.decline_label"
-      label="Decline label"
+      :label="t('partyForm.declineLabel')"
     />
     <FormField
       id="companion_field_label"
       v-model="form.companion_field_label"
-      label="Companion field label"
+      :label="t('partyForm.companionFieldLabel')"
     />
     <FormField
       id="companion_field_visible"
       v-model="form.companion_field_visible"
-      label="Companion field visible"
+      :label="t('partyForm.companionFieldVisible')"
       type="checkbox"
     />
 
@@ -100,7 +102,7 @@ function handleSubmit() {
         v-else
         class="w-4 h-4"
       />
-      {{ isEditMode ? 'Save' : 'Create party' }}
+      {{ isEditMode ? t('partyForm.save') : t('partyForm.create') }}
     </button>
   </form>
 </template>

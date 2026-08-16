@@ -74,6 +74,10 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+      args:
+        # Default UI language baked into the built SPA (see frontend/Dockerfile
+        # and frontend/src/i18n/index.js). Unset falls back to "en".
+        VITE_DEFAULT_LOCALE: ${DEFAULT_LOCALE:-en}
     restart: unless-stopped
     depends_on:
       - backend

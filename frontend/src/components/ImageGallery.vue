@@ -1,11 +1,14 @@
 <script setup>
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { apiClient } from '../api/client';
 
 const props = defineProps({
   partyId: { type: String, required: true },
 });
+
+const { t } = useI18n();
 
 const images = ref([]);
 const errorMessage = ref('');
@@ -16,7 +19,7 @@ async function loadImages() {
   try {
     images.value = await apiClient.get(`/parties/${props.partyId}/images`);
   } catch {
-    errorMessage.value = 'Could not load images.';
+    errorMessage.value = t('imageGallery.errorLoad');
   }
 }
 
@@ -32,7 +35,7 @@ async function handleFileChange(event) {
     await apiClient.post(`/parties/${props.partyId}/images`, formData);
     await loadImages();
   } catch {
-    errorMessage.value = 'Could not upload the image.';
+    errorMessage.value = t('imageGallery.errorUpload');
   } finally {
     isUploading.value = false;
     if (fileInput.value) fileInput.value.value = '';
@@ -45,7 +48,7 @@ async function handleDelete(imageId) {
     await apiClient.delete(`/parties/${props.partyId}/images/${imageId}`);
     await loadImages();
   } catch {
-    errorMessage.value = 'Could not delete the image.';
+    errorMessage.value = t('imageGallery.errorDelete');
   }
 }
 
@@ -55,7 +58,7 @@ onMounted(loadImages);
 <template>
   <div class="flex flex-col gap-4">
     <h2 class="text-lg font-semibold">
-      Background images
+      {{ t('imageGallery.title') }}
     </h2>
 
     <p
@@ -79,7 +82,7 @@ onMounted(loadImages);
         <button
           type="button"
           class="absolute top-1 right-1 bg-red-600 text-white rounded-full h-6 w-6 text-xs leading-none hover:bg-red-700 cursor-pointer"
-          aria-label="Delete image"
+          :aria-label="t('imageGallery.deleteImage')"
           @click="handleDelete(image.id)"
         >
           &times;
@@ -89,12 +92,12 @@ onMounted(loadImages);
         v-if="images.length === 0"
         class="text-primary/70 text-sm"
       >
-        No images uploaded yet - the neutral background color is used instead.
+        {{ t('imageGallery.empty') }}
       </p>
     </div>
 
     <label class="self-start">
-      <span class="sr-only">Upload image</span>
+      <span class="sr-only">{{ t('imageGallery.uploadImage') }}</span>
       <input
         ref="fileInput"
         type="file"

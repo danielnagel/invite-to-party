@@ -1,5 +1,6 @@
 <script setup>
 import { reactive, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import FormField from './FormField.vue';
 import IconPlus from './icons/IconPlus.vue';
@@ -11,6 +12,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['submit', 'cancel']);
+const { t } = useI18n();
 
 function emptyForm() {
   return {
@@ -42,19 +44,19 @@ function handleSubmit() {
     <FormField
       id="guest_name"
       v-model="form.guest_name"
-      label="Guest name"
+      :label="t('inviteForm.guestName')"
       required
     />
     <FormField
       id="greeting_text"
       v-model="form.greeting_text"
-      label="Greeting text"
+      :label="t('inviteForm.greetingText')"
       type="textarea"
     />
     <FormField
       id="allow_companion"
       v-model="form.allow_companion"
-      label="Allow companion"
+      :label="t('inviteForm.allowCompanion')"
       type="checkbox"
     />
 
@@ -71,7 +73,7 @@ function handleSubmit() {
           v-else
           class="w-4 h-4"
         />
-        {{ isEditMode ? 'Save' : 'Add guest' }}
+        {{ isEditMode ? t('inviteForm.save') : t('inviteForm.add') }}
       </button>
       <button
         v-if="isEditMode"
@@ -79,7 +81,7 @@ function handleSubmit() {
         class="rounded px-4 py-2 border border-primary/30 hover:bg-primary/10 cursor-pointer"
         @click="$emit('cancel')"
       >
-        Cancel
+        {{ t('inviteForm.cancel') }}
       </button>
     </div>
   </form>

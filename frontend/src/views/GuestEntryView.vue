@@ -1,12 +1,14 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 import { useGuestSessionStore } from '../stores/guestSession';
 
 const route = useRoute();
 const router = useRouter();
 const guestSession = useGuestSessionStore();
+const { t } = useI18n();
 
 const code = ref(typeof route.query['invite-code'] === 'string' ? route.query['invite-code'] : '');
 const errorMessage = ref('');
@@ -23,13 +25,13 @@ async function submit() {
     // belong to that party.
     if (route.params.slug && guestSession.party.slug !== route.params.slug) {
       guestSession.clear();
-      errorMessage.value = 'This invite code is not valid for this party.';
+      errorMessage.value = t('guestEntry.errorWrongParty');
       return;
     }
 
     router.push('/guest');
   } catch {
-    errorMessage.value = 'Invalid or unknown invite code.';
+    errorMessage.value = t('guestEntry.errorInvalidCode');
   } finally {
     isSubmitting.value = false;
   }
@@ -46,7 +48,7 @@ onMounted(() => {
   <main class="flex flex-col items-center justify-center px-4 py-10">
     <div class="w-full max-w-sm bg-black/60 rounded-lg p-6">
       <h1 class="text-2xl font-semibold mb-6">
-        You're invited
+        {{ t('guestEntry.title') }}
       </h1>
 
       <form
@@ -57,7 +59,7 @@ onMounted(() => {
           <label
             for="invite-code"
             class="text-sm font-medium"
-          >Invite code</label>
+          >{{ t('guestEntry.inviteCode') }}</label>
           <input
             id="invite-code"
             v-model="code"
@@ -79,7 +81,7 @@ onMounted(() => {
           class="bg-primary text-secondary rounded px-4 py-2 hover:bg-primary/90 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           :disabled="isSubmitting"
         >
-          Continue
+          {{ t('guestEntry.submit') }}
         </button>
       </form>
     </div>

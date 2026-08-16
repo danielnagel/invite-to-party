@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
 import HostLoginView from './HostLoginView.vue';
+import i18n from '../i18n';
 
 const { apiClient } = vi.hoisted(() => ({
   apiClient: {
@@ -39,7 +40,7 @@ describe('HostLoginView', () => {
     const router = createTestRouter();
     await router.isReady();
 
-    render(HostLoginView, { global: { plugins: [router] } });
+    render(HostLoginView, { global: { plugins: [router, i18n] } });
 
     await fireEvent.update(screen.getByLabelText(/^Username/), 'daniel');
     await fireEvent.update(screen.getByLabelText(/^Password/), 'secret');
@@ -54,7 +55,7 @@ describe('HostLoginView', () => {
     const router = createTestRouter();
     await router.isReady();
 
-    render(HostLoginView, { global: { plugins: [router] } });
+    render(HostLoginView, { global: { plugins: [router, i18n] } });
 
     await fireEvent.update(screen.getByLabelText(/^Username/), 'daniel');
     await fireEvent.update(screen.getByLabelText(/^Password/), 'wrong');

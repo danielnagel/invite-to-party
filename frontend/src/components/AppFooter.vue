@@ -1,10 +1,13 @@
 <script setup>
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 import { useHostAuthStore } from '../stores/hostAuth';
+import LanguageSwitch from './LanguageSwitch.vue';
 
 const hostAuth = useHostAuthStore();
 const router = useRouter();
+const { t } = useI18n();
 
 async function handleLogout() {
   await hostAuth.logout();
@@ -22,14 +25,17 @@ async function handleLogout() {
       >
       <span class="text-sm">Invite to Party</span>
 
-      <button
-        v-if="hostAuth.isAuthenticated"
-        type="button"
-        class="text-xs text-primary/60 hover:underline cursor-pointer"
-        @click="handleLogout"
-      >
-        Log out
-      </button>
+      <template v-if="hostAuth.isAuthenticated">
+        <LanguageSwitch />
+
+        <button
+          type="button"
+          class="text-xs text-primary/60 hover:underline cursor-pointer"
+          @click="handleLogout"
+        >
+          {{ t('app.logout') }}
+        </button>
+      </template>
     </div>
 
     <a
@@ -38,7 +44,7 @@ async function handleLogout() {
       rel="noopener noreferrer"
       class="text-xs text-primary/60 hover:underline"
     >
-      Made by Daniel
+      {{ t('app.madeBy') }}
     </a>
   </footer>
 </template>

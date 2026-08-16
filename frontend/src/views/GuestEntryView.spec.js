@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
 import GuestEntryView from './GuestEntryView.vue';
+import i18n from '../i18n';
 
 const { apiClient } = vi.hoisted(() => ({
   apiClient: {
@@ -49,7 +50,7 @@ describe('GuestEntryView', () => {
     router.push('/?invite-code=abc123');
     await router.isReady();
 
-    render(GuestEntryView, { global: { plugins: [router] } });
+    render(GuestEntryView, { global: { plugins: [router, i18n] } });
 
     await waitFor(() => expect(router.currentRoute.value.path).toBe('/guest'));
     expect(apiClient.get).toHaveBeenCalledWith('/invites/lookup', { code: 'abc123' });
@@ -61,7 +62,7 @@ describe('GuestEntryView', () => {
     router.push('/');
     await router.isReady();
 
-    render(GuestEntryView, { global: { plugins: [router] } });
+    render(GuestEntryView, { global: { plugins: [router, i18n] } });
 
     await fireEvent.update(screen.getByLabelText('Invite code'), 'wrong');
     await fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
@@ -76,7 +77,7 @@ describe('GuestEntryView', () => {
     router.push('/wedding');
     await router.isReady();
 
-    render(GuestEntryView, { global: { plugins: [router] } });
+    render(GuestEntryView, { global: { plugins: [router, i18n] } });
 
     await fireEvent.update(screen.getByLabelText('Invite code'), 'abc123');
     await fireEvent.click(screen.getByRole('button', { name: 'Continue' }));

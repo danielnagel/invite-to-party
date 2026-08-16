@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/vue';
 import { createPinia, setActivePinia } from 'pinia';
 
 import GuestPreviewView from './GuestPreviewView.vue';
+import i18n from '../i18n';
 
 const { apiClient } = vi.hoisted(() => ({
   apiClient: {
@@ -60,7 +61,7 @@ describe('GuestPreviewView', () => {
 
   it('loads the party preview and renders the guest RSVP page', async () => {
     apiClient.get.mockResolvedValueOnce(previewResponse());
-    render(GuestPreviewView, { global: { stubs: globalStubs } });
+    render(GuestPreviewView, { global: { stubs: globalStubs, plugins: [i18n] } });
 
     await waitFor(() => expect(apiClient.get).toHaveBeenCalledWith('/parties/party-1/preview'));
     expect(await screen.findByText('Hello Guest Name')).toBeInTheDocument();
@@ -73,7 +74,7 @@ describe('GuestPreviewView', () => {
 
   it('does not call the RSVP endpoint when responding in preview mode', async () => {
     apiClient.get.mockResolvedValueOnce(previewResponse());
-    render(GuestPreviewView, { global: { stubs: globalStubs } });
+    render(GuestPreviewView, { global: { stubs: globalStubs, plugins: [i18n] } });
 
     const acceptButton = await screen.findByRole('button', { name: 'Accept' });
     acceptButton.click();
@@ -84,7 +85,7 @@ describe('GuestPreviewView', () => {
 
   it('shows an error message when the preview fails to load', async () => {
     apiClient.get.mockRejectedValueOnce(new Error('nope'));
-    render(GuestPreviewView, { global: { stubs: globalStubs } });
+    render(GuestPreviewView, { global: { stubs: globalStubs, plugins: [i18n] } });
 
     expect(await screen.findByText('Could not load a preview for this party.')).toBeInTheDocument();
   });

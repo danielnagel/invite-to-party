@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from 'pinia';
 
 import GuestView from './GuestView.vue';
 import { useGuestSessionStore } from '../stores/guestSession';
+import i18n from '../i18n';
 
 const { apiClient } = vi.hoisted(() => ({
   apiClient: {
@@ -48,7 +49,7 @@ describe('GuestView', () => {
 
   it('greets the guest by name and shows the greeting text', () => {
     seedGuestSession();
-    render(GuestView);
+    render(GuestView, { global: { plugins: [i18n] } });
 
     expect(screen.getByText('Hello Anna')).toBeInTheDocument();
     expect(screen.getByText('So happy you can join us!')).toBeInTheDocument();
@@ -56,7 +57,7 @@ describe('GuestView', () => {
 
   it('shows the companion field only when the party and the invite both allow it', () => {
     seedGuestSession({ allowCompanion: false });
-    render(GuestView);
+    render(GuestView, { global: { plugins: [i18n] } });
 
     expect(screen.queryByText('Bringing someone?')).not.toBeInTheDocument();
   });
@@ -64,7 +65,7 @@ describe('GuestView', () => {
   it('submits the accept response with the party-specific label', async () => {
     apiClient.post.mockResolvedValueOnce({ status: 'accepted', companion_response: true, expired: false });
     seedGuestSession();
-    render(GuestView);
+    render(GuestView, { global: { plugins: [i18n] } });
 
     await fireEvent.click(screen.getByRole('checkbox'));
     await fireEvent.click(screen.getByRole('button', { name: 'Yes, count me in' }));
@@ -74,7 +75,7 @@ describe('GuestView', () => {
 
   it('shows a plain expired state instead of the RSVP form', () => {
     seedGuestSession({ expired: true });
-    render(GuestView);
+    render(GuestView, { global: { plugins: [i18n] } });
 
     expect(screen.getByText(/already took place/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Yes, count me in' })).not.toBeInTheDocument();

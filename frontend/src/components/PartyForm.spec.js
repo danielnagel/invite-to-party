@@ -2,10 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/vue';
 
 import PartyForm from './PartyForm.vue';
+import i18n from '../i18n';
 
 describe('PartyForm', () => {
   it('requires the name, slug and event date - matching the backend validation', () => {
-    render(PartyForm);
+    render(PartyForm, { global: { plugins: [i18n] } });
 
     expect(screen.getByLabelText(/^Name/)).toBeRequired();
     expect(screen.getByLabelText(/^Slug/)).toBeRequired();
@@ -13,7 +14,7 @@ describe('PartyForm', () => {
   });
 
   it('emits submit with the entered data', async () => {
-    const { emitted } = render(PartyForm);
+    const { emitted } = render(PartyForm, { global: { plugins: [i18n] } });
 
     await fireEvent.update(screen.getByLabelText(/^Name/), 'Summer Party');
     await fireEvent.update(screen.getByLabelText(/^Slug/), 'summer-party');
@@ -38,6 +39,7 @@ describe('PartyForm', () => {
         isEditMode: true,
         initialData: { name: 'Existing Party', event_date: '2026-09-01' },
       },
+      global: { plugins: [i18n] },
     });
 
     expect(screen.getByLabelText(/^Name/).value).toBe('Existing Party');

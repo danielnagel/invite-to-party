@@ -1,5 +1,5 @@
 <script setup>
-import { statusLabel } from '../constants/inviteStatus';
+import { useI18n } from 'vue-i18n';
 
 defineProps({
   invites: { type: Array, default: () => [] },
@@ -7,6 +7,12 @@ defineProps({
 });
 
 defineEmits(['edit', 'delete']);
+
+const { t } = useI18n();
+
+function statusLabel(status) {
+  return t(`inviteStatus.${status}`);
+}
 </script>
 
 <template>
@@ -15,19 +21,19 @@ defineEmits(['edit', 'delete']);
       <thead>
         <tr>
           <th class="text-left border-b border-primary/20 px-3 py-2">
-            Guest
+            {{ t('inviteTable.guest') }}
           </th>
           <th class="text-left border-b border-primary/20 px-3 py-2">
-            Invite code
+            {{ t('inviteTable.inviteCode') }}
           </th>
           <th class="text-left border-b border-primary/20 px-3 py-2">
-            Status
+            {{ t('inviteTable.status') }}
           </th>
           <th class="text-left border-b border-primary/20 px-3 py-2">
-            Companion
+            {{ t('inviteTable.companion') }}
           </th>
           <th class="text-left border-b border-primary/20 px-3 py-2">
-            Actions
+            {{ t('inviteTable.actions') }}
           </th>
         </tr>
       </thead>
@@ -44,10 +50,10 @@ defineEmits(['edit', 'delete']);
             {{ invite.invite_code }}
           </td>
           <td class="px-3 py-2">
-            {{ partyExpired ? 'Expired' : statusLabel(invite.status) }}
+            {{ partyExpired ? t('inviteTable.expired') : statusLabel(invite.status) }}
           </td>
           <td class="px-3 py-2">
-            {{ invite.allow_companion ? (invite.companion_response ? 'Yes' : 'No') : '-' }}
+            {{ invite.allow_companion ? (invite.companion_response ? t('inviteTable.yes') : t('inviteTable.no')) : '-' }}
           </td>
           <td class="px-3 py-2 flex gap-3">
             <button
@@ -55,14 +61,14 @@ defineEmits(['edit', 'delete']);
               class="underline text-sm hover:text-accent cursor-pointer"
               @click="$emit('edit', invite)"
             >
-              Edit
+              {{ t('inviteTable.edit') }}
             </button>
             <button
               type="button"
               class="underline text-sm text-red-400 hover:text-red-300 cursor-pointer"
               @click="$emit('delete', invite.id)"
             >
-              Delete
+              {{ t('inviteTable.delete') }}
             </button>
           </td>
         </tr>
@@ -71,7 +77,7 @@ defineEmits(['edit', 'delete']);
             colspan="5"
             class="px-3 py-6 text-center text-primary/60"
           >
-            No invites yet.
+            {{ t('inviteTable.empty') }}
           </td>
         </tr>
       </tbody>

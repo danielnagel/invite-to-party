@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 import { useGuestSessionStore } from '../stores/guestSession';
 import GuestView from './GuestView.vue';
@@ -9,6 +10,7 @@ import IconArrowLeft from '../components/icons/IconArrowLeft.vue';
 const route = useRoute();
 const guestSession = useGuestSessionStore();
 const partyId = route.params.id;
+const { t } = useI18n();
 
 const errorMessage = ref('');
 
@@ -16,7 +18,7 @@ onMounted(async () => {
   try {
     await guestSession.loadPreview(partyId);
   } catch {
-    errorMessage.value = 'Could not load a preview for this party.';
+    errorMessage.value = t('guestPreview.error');
   }
 });
 
@@ -35,9 +37,9 @@ onBeforeUnmount(() => {
         class="flex items-center gap-1.5 text-primary/70 hover:text-primary hover:underline"
       >
         <IconArrowLeft class="w-4 h-4" />
-        Back to admin
+        {{ t('guestPreview.backToAdmin') }}
       </router-link>
-      <span class="text-primary/70">Preview - responses here are not saved</span>
+      <span class="text-primary/70">{{ t('guestPreview.previewNotice') }}</span>
     </div>
 
     <p

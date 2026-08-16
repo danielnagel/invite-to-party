@@ -1,11 +1,13 @@
 <script setup>
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { useGuestSessionStore } from '../stores/guestSession';
 import IconCheck from '../components/icons/IconCheck.vue';
 import IconX from '../components/icons/IconX.vue';
 
 const guestSession = useGuestSessionStore();
+const { t } = useI18n();
 
 const companion = ref(!!guestSession.companionResponse);
 const errorMessage = ref('');
@@ -21,7 +23,7 @@ async function respond(status) {
   try {
     await guestSession.respond(status, showCompanionField.value ? companion.value : false);
   } catch {
-    errorMessage.value = 'Could not save your answer, please try again.';
+    errorMessage.value = t('guest.error');
   } finally {
     isSubmitting.value = false;
   }
@@ -33,7 +35,7 @@ async function respond(status) {
     <div class="w-full max-w-md bg-black/60 rounded-lg p-6 flex flex-col gap-6">
       <div>
         <h1 class="text-2xl font-semibold">
-          Hello {{ guestSession.guestName }}
+          {{ t('guest.hello', { name: guestSession.guestName }) }}
         </h1>
         <p
           v-if="guestSession.greetingText"
@@ -47,7 +49,7 @@ async function respond(status) {
         v-if="guestSession.expired"
         class="text-primary/70"
       >
-        This invite has expired - the party already took place.
+        {{ t('guest.expired') }}
       </p>
 
       <template v-else>
@@ -90,7 +92,7 @@ async function respond(status) {
           v-if="guestSession.status !== 'pending'"
           class="text-sm text-primary/70"
         >
-          You can change your answer any time before the party.
+          {{ t('guest.changeAnswerHint') }}
         </p>
 
         <p

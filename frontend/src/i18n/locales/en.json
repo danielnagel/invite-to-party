@@ -1,0 +1,113 @@
+{
+  "app": {
+    "logout": "Log out",
+    "madeBy": "Made by Daniel",
+    "language": "Language"
+  },
+  "hostLogin": {
+    "title": "Host login",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Log in",
+    "error": "Login failed. Please check your credentials."
+  },
+  "guestEntry": {
+    "title": "You're invited",
+    "inviteCode": "Invite code",
+    "submit": "Continue",
+    "errorWrongParty": "This invite code is not valid for this party.",
+    "errorInvalidCode": "Invalid or unknown invite code."
+  },
+  "guest": {
+    "hello": "Hello {name}",
+    "expired": "This invite has expired - the party already took place.",
+    "changeAnswerHint": "You can change your answer any time before the party.",
+    "error": "Could not save your answer, please try again."
+  },
+  "guestPreview": {
+    "backToAdmin": "Back to admin",
+    "previewNotice": "Preview - responses here are not saved",
+    "error": "Could not load a preview for this party."
+  },
+  "hostParties": {
+    "title": "Parties",
+    "newParty": "New party",
+    "loading": "Loading...",
+    "empty": "No parties yet.",
+    "errorLoad": "Could not load parties.",
+    "errorCreate": "Could not create the party."
+  },
+  "hostPartyDetail": {
+    "backToParties": "Back to parties",
+    "previewGuestPage": "Preview guest page",
+    "deleteParty": "Delete party",
+    "editInvite": "Edit invite",
+    "addInvite": "Add invite",
+    "deleteInviteTitle": "Delete invite?",
+    "deleteInviteMessage": "This guest's invite code will stop working immediately.",
+    "deletePartyTitle": "Delete party?",
+    "deletePartyMessage": "This deletes the party, all its invites and uploaded images.",
+    "errorLoadParty": "Could not load this party.",
+    "errorLoadInvites": "Could not load invites.",
+    "errorSaveParty": "Could not save the party settings.",
+    "errorSaveInvite": "Could not save the invite.",
+    "errorDeleteInvite": "Could not delete the invite.",
+    "errorDeleteParty": "Could not delete this party."
+  },
+  "partyForm": {
+    "name": "Name",
+    "slug": "Slug",
+    "slugHint": "Vanity URL, e.g. 'wedding'. Lowercase letters, digits and hyphens only.",
+    "eventDate": "Event date",
+    "acceptLabel": "Accept label",
+    "declineLabel": "Decline label",
+    "companionFieldLabel": "Companion field label",
+    "companionFieldVisible": "Companion field visible",
+    "save": "Save",
+    "create": "Create party",
+    "defaultAcceptLabel": "Yes, I will be there",
+    "defaultDeclineLabel": "No, I can't make it",
+    "defaultCompanionFieldLabel": "Bringing a plus one?"
+  },
+  "inviteForm": {
+    "guestName": "Guest name",
+    "greetingText": "Greeting text",
+    "allowCompanion": "Allow companion",
+    "save": "Save",
+    "add": "Add guest",
+    "cancel": "Cancel"
+  },
+  "inviteTable": {
+    "guest": "Guest",
+    "inviteCode": "Invite code",
+    "status": "Status",
+    "companion": "Companion",
+    "actions": "Actions",
+    "expired": "Expired",
+    "yes": "Yes",
+    "no": "No",
+    "edit": "Edit",
+    "delete": "Delete",
+    "empty": "No invites yet."
+  },
+  "inviteStatus": {
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "declined": "Declined"
+  },
+  "confirmDialog": {
+    "defaultTitle": "Are you sure?",
+    "defaultMessage": "This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Delete"
+  },
+  "imageGallery": {
+    "title": "Background images",
+    "empty": "No images uploaded yet - the neutral background color is used instead.",
+    "uploadImage": "Upload image",
+    "deleteImage": "Delete image",
+    "errorLoad": "Could not load images.",
+    "errorUpload": "Could not upload the image.",
+    "errorDelete": "Could not delete the image."
+  }
+}

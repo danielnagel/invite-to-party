@@ -19,6 +19,10 @@ COPY frontend ./frontend
 
 WORKDIR /app/frontend
 
+# Read by frontend/src/i18n/index.js via import.meta.env at build time.
+ARG VITE_DEFAULT_LOCALE=en
+ENV VITE_DEFAULT_LOCALE=${VITE_DEFAULT_LOCALE}
+
 RUN npm run build
 
 # ---- Runtime stage -------------------------------------------------------

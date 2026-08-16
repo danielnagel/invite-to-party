@@ -1,0 +1,113 @@
+{
+  "app": {
+    "logout": "Abmelden",
+    "madeBy": "Erstellt von Daniel",
+    "language": "Sprache"
+  },
+  "hostLogin": {
+    "title": "Host-Login",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "error": "Anmeldung fehlgeschlagen. Bitte überprüfe deine Zugangsdaten."
+  },
+  "guestEntry": {
+    "title": "Du bist eingeladen",
+    "inviteCode": "Einladungscode",
+    "submit": "Weiter",
+    "errorWrongParty": "Dieser Einladungscode ist für diese Feier nicht gültig.",
+    "errorInvalidCode": "Ungültiger oder unbekannter Einladungscode."
+  },
+  "guest": {
+    "hello": "Hallo {name}",
+    "expired": "Diese Einladung ist abgelaufen - die Feier hat bereits stattgefunden.",
+    "changeAnswerHint": "Du kannst deine Antwort jederzeit vor der Feier ändern.",
+    "error": "Deine Antwort konnte nicht gespeichert werden, bitte versuche es erneut."
+  },
+  "guestPreview": {
+    "backToAdmin": "Zurück zur Verwaltung",
+    "previewNotice": "Vorschau - Antworten hier werden nicht gespeichert",
+    "error": "Es konnte keine Vorschau für diese Feier geladen werden."
+  },
+  "hostParties": {
+    "title": "Feiern",
+    "newParty": "Neue Feier",
+    "loading": "Lädt...",
+    "empty": "Noch keine Feiern.",
+    "errorLoad": "Feiern konnten nicht geladen werden.",
+    "errorCreate": "Die Feier konnte nicht erstellt werden."
+  },
+  "hostPartyDetail": {
+    "backToParties": "Zurück zu den Feiern",
+    "previewGuestPage": "Gästeseite ansehen",
+    "deleteParty": "Feier löschen",
+    "editInvite": "Einladung bearbeiten",
+    "addInvite": "Einladung hinzufügen",
+    "deleteInviteTitle": "Einladung löschen?",
+    "deleteInviteMessage": "Der Einladungscode dieses Gasts funktioniert danach sofort nicht mehr.",
+    "deletePartyTitle": "Feier löschen?",
+    "deletePartyMessage": "Dies löscht die Feier, alle Einladungen und hochgeladenen Bilder.",
+    "errorLoadParty": "Diese Feier konnte nicht geladen werden.",
+    "errorLoadInvites": "Einladungen konnten nicht geladen werden.",
+    "errorSaveParty": "Die Feiereinstellungen konnten nicht gespeichert werden.",
+    "errorSaveInvite": "Die Einladung konnte nicht gespeichert werden.",
+    "errorDeleteInvite": "Die Einladung konnte nicht gelöscht werden.",
+    "errorDeleteParty": "Diese Feier konnte nicht gelöscht werden."
+  },
+  "partyForm": {
+    "name": "Name",
+    "slug": "Slug",
+    "slugHint": "Eigene URL, z. B. 'hochzeit'. Nur Kleinbuchstaben, Ziffern und Bindestriche.",
+    "eventDate": "Datum der Feier",
+    "acceptLabel": "Zusage-Beschriftung",
+    "declineLabel": "Absage-Beschriftung",
+    "companionFieldLabel": "Begleitperson-Feldbeschriftung",
+    "companionFieldVisible": "Begleitperson-Feld sichtbar",
+    "save": "Speichern",
+    "create": "Feier erstellen",
+    "defaultAcceptLabel": "Ja, ich komme",
+    "defaultDeclineLabel": "Nein, ich kann leider nicht",
+    "defaultCompanionFieldLabel": "Bringst du eine Begleitung mit?"
+  },
+  "inviteForm": {
+    "guestName": "Name des Gasts",
+    "greetingText": "Begrüßungstext",
+    "allowCompanion": "Begleitung erlauben",
+    "save": "Speichern",
+    "add": "Gast hinzufügen",
+    "cancel": "Abbrechen"
+  },
+  "inviteTable": {
+    "guest": "Gast",
+    "inviteCode": "Einladungscode",
+    "status": "Status",
+    "companion": "Begleitung",
+    "actions": "Aktionen",
+    "expired": "Abgelaufen",
+    "yes": "Ja",
+    "no": "Nein",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "empty": "Noch keine Einladungen."
+  },
+  "inviteStatus": {
+    "pending": "Ausstehend",
+    "accepted": "Zugesagt",
+    "declined": "Abgesagt"
+  },
+  "confirmDialog": {
+    "defaultTitle": "Bist du sicher?",
+    "defaultMessage": "Diese Aktion kann nicht rückgängig gemacht werden.",
+    "cancel": "Abbrechen",
+    "confirm": "Löschen"
+  },
+  "imageGallery": {
+    "title": "Hintergrundbilder",
+    "empty": "Noch keine Bilder hochgeladen - stattdessen wird die neutrale Hintergrundfarbe verwendet.",
+    "uploadImage": "Bild hochladen",
+    "deleteImage": "Bild löschen",
+    "errorLoad": "Bilder konnten nicht geladen werden.",
+    "errorUpload": "Das Bild konnte nicht hochgeladen werden.",
+    "errorDelete": "Das Bild konnte nicht gelöscht werden."
+  }
+}

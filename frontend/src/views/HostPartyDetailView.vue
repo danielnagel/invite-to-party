@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 import { apiClient } from '../api/client';
 import PartyForm from '../components/PartyForm.vue';
@@ -14,6 +15,7 @@ import IconArrowRight from '../components/icons/IconArrowRight.vue';
 const route = useRoute();
 const router = useRouter();
 const partyId = route.params.id;
+const { t } = useI18n();
 
 const party = ref(null);
 const invites = ref([]);
@@ -35,7 +37,7 @@ async function loadParty() {
   try {
     party.value = await apiClient.get(`/parties/${partyId}`);
   } catch {
-    errorMessage.value = 'Could not load this party.';
+    errorMessage.value = t('hostPartyDetail.errorLoadParty');
   }
 }
 
@@ -43,7 +45,7 @@ async function loadInvites() {
   try {
     invites.value = await apiClient.get(`/parties/${partyId}/invites`);
   } catch {
-    errorMessage.value = 'Could not load invites.';
+    errorMessage.value = t('hostPartyDetail.errorLoadInvites');
   }
 }
 
@@ -52,7 +54,7 @@ async function handlePartySubmit(data) {
   try {
     party.value = await apiClient.put(`/parties/${partyId}`, data);
   } catch {
-    errorMessage.value = 'Could not save the party settings.';
+    errorMessage.value = t('hostPartyDetail.errorSaveParty');
   }
 }
 
@@ -68,7 +70,7 @@ async function handleInviteSubmit(data) {
     }
     await loadInvites();
   } catch {
-    errorMessage.value = 'Could not save the invite.';
+    errorMessage.value = t('hostPartyDetail.errorSaveInvite');
   }
 }
 
@@ -91,7 +93,7 @@ async function confirmDeleteInvite() {
     deleteInviteTarget.value = null;
     await loadInvites();
   } catch {
-    errorMessage.value = 'Could not delete the invite.';
+    errorMessage.value = t('hostPartyDetail.errorDeleteInvite');
   }
 }
 
@@ -100,7 +102,7 @@ async function confirmDeleteParty() {
     await apiClient.delete(`/parties/${partyId}`);
     router.push('/invite/parties');
   } catch {
-    errorMessage.value = 'Could not delete this party.';
+    errorMessage.value = t('hostPartyDetail.errorDeleteParty');
   }
 }
 
@@ -118,13 +120,13 @@ onMounted(() => {
         class="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-accent hover:underline"
       >
         <IconArrowLeft class="w-4 h-4" />
-        Back to parties
+        {{ t('hostPartyDetail.backToParties') }}
       </router-link>
       <router-link
         :to="`/invite/parties/${partyId}/preview`"
         class="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-accent hover:underline"
       >
-        Preview guest page
+        {{ t('hostPartyDetail.previewGuestPage') }}
         <IconArrowRight class="w-4 h-4" />
       </router-link>
     </div>
@@ -149,7 +151,7 @@ onMounted(() => {
           class="text-sm text-red-400 underline hover:text-red-300 cursor-pointer"
           @click="showDeleteParty = true"
         >
-          Delete party
+          {{ t('hostPartyDetail.deleteParty') }}
         </button>
       </div>
       <PartyForm
@@ -168,7 +170,7 @@ onMounted(() => {
 
     <section class="bg-black/60 rounded-lg p-6 flex flex-col gap-6">
       <h2 class="text-lg font-semibold">
-        {{ editingInvite ? 'Edit invite' : 'Add invite' }}
+        {{ editingInvite ? t('hostPartyDetail.editInvite') : t('hostPartyDetail.addInvite') }}
       </h2>
       <InviteForm
         :key="editingInvite?.id ?? `new-${newInviteFormKey}`"
@@ -188,16 +190,16 @@ onMounted(() => {
 
     <ConfirmDialog
       :open="!!deleteInviteTarget"
-      title="Delete invite?"
-      message="This guest's invite code will stop working immediately."
+      :title="t('hostPartyDetail.deleteInviteTitle')"
+      :message="t('hostPartyDetail.deleteInviteMessage')"
       @confirm="confirmDeleteInvite"
       @cancel="deleteInviteTarget = null"
     />
 
     <ConfirmDialog
       :open="showDeleteParty"
-      title="Delete party?"
-      message="This deletes the party, all its invites and uploaded images."
+      :title="t('hostPartyDetail.deletePartyTitle')"
+      :message="t('hostPartyDetail.deletePartyMessage')"
       @confirm="confirmDeleteParty"
       @cancel="showDeleteParty = false"
     />

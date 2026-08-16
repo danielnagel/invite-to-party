@@ -183,6 +183,7 @@ onMounted(() => {
       <InviteTable
         :invites="invites"
         :party-expired="isExpired"
+        :party-slug="party?.slug ?? ''"
         @edit="handleEditInvite"
         @delete="handleDeleteInviteRequest"
       />

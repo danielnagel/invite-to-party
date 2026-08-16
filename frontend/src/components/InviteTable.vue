@@ -1,17 +1,44 @@
 <script setup>
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-defineProps({
+import IconCopy from './icons/IconCopy.vue';
+import IconCheck from './icons/IconCheck.vue';
+
+const props = defineProps({
   invites: { type: Array, default: () => [] },
   partyExpired: { type: Boolean, default: false },
+  partySlug: { type: String, default: '' },
 });
 
 defineEmits(['edit', 'delete']);
 
 const { t } = useI18n();
 
+const copiedInviteId = ref(null);
+let copiedTimeout = null;
+
 function statusLabel(status) {
   return t(`inviteStatus.${status}`);
+}
+
+function guestUrl(invite) {
+  const params = new URLSearchParams({ 'invite-code': invite.invite_code });
+  return `${window.location.origin}/${props.partySlug}?${params}`;
+}
+
+async function copyGuestUrl(invite) {
+  try {
+    await navigator.clipboard.writeText(guestUrl(invite));
+    clearTimeout(copiedTimeout);
+    copiedInviteId.value = invite.id;
+    copiedTimeout = setTimeout(() => {
+      copiedInviteId.value = null;
+    }, 2000);
+  } catch {
+    // Clipboard access can fail (permissions, insecure context); nothing to
+    // recover from beyond leaving the button unclicked-looking.
+  }
 }
 </script>
 
@@ -55,7 +82,22 @@ function statusLabel(status) {
           <td class="px-3 py-2">
             {{ invite.allow_companion ? (invite.companion_response ? t('inviteTable.yes') : t('inviteTable.no')) : '-' }}
           </td>
-          <td class="px-3 py-2 flex gap-3">
+          <td class="px-3 py-2 flex gap-3 items-center">
+            <button
+              type="button"
+              class="flex items-center gap-1 underline text-sm hover:text-accent cursor-pointer"
+              @click="copyGuestUrl(invite)"
+            >
+              <IconCheck
+                v-if="copiedInviteId === invite.id"
+                class="w-3.5 h-3.5"
+              />
+              <IconCopy
+                v-else
+                class="w-3.5 h-3.5"
+              />
+              {{ copiedInviteId === invite.id ? t('inviteTable.copied') : t('inviteTable.copyLink') }}
+            </button>
             <button
               type="button"
               class="underline text-sm hover:text-accent cursor-pointer"

@@ -78,7 +78,7 @@ onMounted(loadImages);
         >
         <button
           type="button"
-          class="absolute top-1 right-1 bg-red-600 text-white rounded-full h-6 w-6 text-xs leading-none"
+          class="absolute top-1 right-1 bg-red-600 text-white rounded-full h-6 w-6 text-xs leading-none hover:bg-red-700 cursor-pointer"
           aria-label="Delete image"
           @click="handleDelete(image.id)"
         >

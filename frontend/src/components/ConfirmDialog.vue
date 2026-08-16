@@ -24,14 +24,14 @@ defineEmits(['confirm', 'cancel']);
       <div class="flex justify-end gap-3">
         <button
           type="button"
-          class="px-4 py-2 rounded border border-primary/30"
+          class="px-4 py-2 rounded border border-primary/30 hover:bg-primary/10 cursor-pointer"
           @click="$emit('cancel')"
         >
           Cancel
         </button>
         <button
           type="button"
-          class="px-4 py-2 rounded bg-red-600 text-white"
+          class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 cursor-pointer"
           @click="$emit('confirm')"
         >
           Delete

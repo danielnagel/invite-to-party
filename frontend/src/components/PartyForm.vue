@@ -90,7 +90,7 @@ function handleSubmit() {
 
     <button
       type="submit"
-      class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2 self-start"
+      class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2 self-start hover:bg-accent/90 cursor-pointer"
     >
       <IconSave
         v-if="isEditMode"

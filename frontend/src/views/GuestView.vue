@@ -53,20 +53,20 @@ async function respond(status) {
       <template v-else>
         <label
           v-if="showCompanionField"
-          class="flex items-center gap-2"
+          class="flex items-center gap-2 cursor-pointer"
         >
           <input
             v-model="companion"
             type="checkbox"
-            class="h-4 w-4"
+            class="h-4 w-4 cursor-pointer"
           >
-          <span>{{ guestSession.party.companion_field_label }}</span>
+          <span class="cursor-pointer">{{ guestSession.party.companion_field_label }}</span>
         </label>
 
         <div class="flex justify-center gap-3">
           <button
             type="button"
-            class="flex items-center gap-2 rounded px-4 py-2 disabled:opacity-50"
+            class="flex items-center gap-2 rounded px-4 py-2 hover:brightness-90 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             :class="guestSession.status === 'accepted' ? 'bg-accent text-primary' : 'bg-primary text-secondary'"
             :disabled="isSubmitting"
             @click="respond('accepted')"
@@ -76,7 +76,7 @@ async function respond(status) {
           </button>
           <button
             type="button"
-            class="flex items-center gap-2 rounded px-4 py-2 border border-primary/30 disabled:opacity-50"
+            class="flex items-center gap-2 rounded px-4 py-2 border border-primary/30 hover:bg-primary/10 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             :class="guestSession.status === 'declined' ? 'bg-accent text-primary' : ''"
             :disabled="isSubmitting"
             @click="respond('declined')"

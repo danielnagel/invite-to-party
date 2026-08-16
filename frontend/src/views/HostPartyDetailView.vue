@@ -146,7 +146,7 @@ onMounted(() => {
         </h1>
         <button
           type="button"
-          class="text-sm text-red-400 underline"
+          class="text-sm text-red-400 underline hover:text-red-300 cursor-pointer"
           @click="showDeleteParty = true"
         >
           Delete party

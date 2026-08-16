@@ -52,14 +52,14 @@ defineEmits(['edit', 'delete']);
           <td class="px-3 py-2 flex gap-3">
             <button
               type="button"
-              class="underline text-sm"
+              class="underline text-sm hover:text-accent cursor-pointer"
               @click="$emit('edit', invite)"
             >
               Edit
             </button>
             <button
               type="button"
-              class="underline text-sm text-red-400"
+              class="underline text-sm text-red-400 hover:text-red-300 cursor-pointer"
               @click="$emit('delete', invite.id)"
             >
               Delete

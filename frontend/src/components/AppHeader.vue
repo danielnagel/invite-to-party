@@ -37,7 +37,7 @@ async function handleLogout() {
     <button
       v-if="hostAuth.isAuthenticated"
       type="button"
-      class="ml-4 text-xs text-primary/60 hover:underline"
+      class="ml-4 text-xs text-primary/60 hover:underline cursor-pointer"
       @click="handleLogout"
     >
       Log out

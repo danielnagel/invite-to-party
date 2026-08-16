@@ -61,7 +61,7 @@ function handleSubmit() {
     <div class="flex gap-3">
       <button
         type="submit"
-        class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2"
+        class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2 hover:bg-accent/90 cursor-pointer"
       >
         <IconSave
           v-if="isEditMode"
@@ -76,7 +76,7 @@ function handleSubmit() {
       <button
         v-if="isEditMode"
         type="button"
-        class="rounded px-4 py-2 border border-primary/30"
+        class="rounded px-4 py-2 border border-primary/30 hover:bg-primary/10 cursor-pointer"
         @click="$emit('cancel')"
       >
         Cancel

@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 
 import { useGuestSessionStore } from '../stores/guestSession';
 import GuestView from './GuestView.vue';
+import IconArrowLeft from '../components/icons/IconArrowLeft.vue';
 
 const route = useRoute();
 const guestSession = useGuestSessionStore();
@@ -31,9 +32,10 @@ onBeforeUnmount(() => {
     <div class="flex items-center justify-between gap-3 bg-black/60 px-4 py-3 text-sm text-primary">
       <router-link
         :to="`/invite/parties/${partyId}`"
-        class="text-primary/70 hover:text-primary hover:underline"
+        class="flex items-center gap-1.5 text-primary/70 hover:text-primary hover:underline"
       >
-        ← Back to admin
+        <IconArrowLeft class="w-4 h-4" />
+        Back to admin
       </router-link>
       <span class="text-primary/70">Preview - responses here are not saved</span>
     </div>

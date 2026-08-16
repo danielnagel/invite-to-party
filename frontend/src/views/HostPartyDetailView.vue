@@ -8,6 +8,8 @@ import ImageGallery from '../components/ImageGallery.vue';
 import InviteForm from '../components/InviteForm.vue';
 import InviteTable from '../components/InviteTable.vue';
 import ConfirmDialog from '../components/ConfirmDialog.vue';
+import IconArrowLeft from '../components/icons/IconArrowLeft.vue';
+import IconArrowRight from '../components/icons/IconArrowRight.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -113,15 +115,17 @@ onMounted(() => {
     <div class="flex items-center justify-between bg-black/60 rounded-lg px-4 py-3">
       <router-link
         to="/invite/parties"
-        class="text-sm font-medium text-primary hover:text-accent hover:underline"
+        class="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-accent hover:underline"
       >
-        ← Back to parties
+        <IconArrowLeft class="w-4 h-4" />
+        Back to parties
       </router-link>
       <router-link
         :to="`/invite/parties/${partyId}/preview`"
-        class="text-sm font-medium text-primary hover:text-accent hover:underline"
+        class="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-accent hover:underline"
       >
-        Preview guest page →
+        Preview guest page
+        <IconArrowRight class="w-4 h-4" />
       </router-link>
     </div>
 

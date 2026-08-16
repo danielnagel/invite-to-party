@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 
 import { apiClient } from '../api/client';
 import PartyForm from '../components/PartyForm.vue';
+import IconArrowRight from '../components/icons/IconArrowRight.vue';
 
 const parties = ref([]);
 const isLoading = ref(false);
@@ -86,7 +87,7 @@ onMounted(loadParties);
           <span class="font-medium">{{ party.name }}</span>
           <span class="flex items-center gap-2 text-sm text-primary/70">
             {{ formatDate(party.event_date) }}
-            <span aria-hidden="true">→</span>
+            <IconArrowRight class="w-4 h-4" />
           </span>
         </router-link>
       </li>

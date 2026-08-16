@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue';
 
 import { useGuestSessionStore } from '../stores/guestSession';
+import IconCheck from '../components/icons/IconCheck.vue';
+import IconX from '../components/icons/IconX.vue';
 
 const guestSession = useGuestSessionStore();
 
@@ -64,20 +66,22 @@ async function respond(status) {
         <div class="flex justify-center gap-3">
           <button
             type="button"
-            class="rounded px-4 py-2 disabled:opacity-50"
+            class="flex items-center gap-2 rounded px-4 py-2 disabled:opacity-50"
             :class="guestSession.status === 'accepted' ? 'bg-accent text-primary' : 'bg-primary text-secondary'"
             :disabled="isSubmitting"
             @click="respond('accepted')"
           >
+            <IconCheck class="w-4 h-4" />
             {{ guestSession.party.accept_label }}
           </button>
           <button
             type="button"
-            class="rounded px-4 py-2 border border-primary/30 disabled:opacity-50"
+            class="flex items-center gap-2 rounded px-4 py-2 border border-primary/30 disabled:opacity-50"
             :class="guestSession.status === 'declined' ? 'bg-accent text-primary' : ''"
             :disabled="isSubmitting"
             @click="respond('declined')"
           >
+            <IconX class="w-4 h-4" />
             {{ guestSession.party.decline_label }}
           </button>
         </div>

@@ -2,6 +2,8 @@
 import { reactive, watch } from 'vue';
 
 import FormField from './FormField.vue';
+import IconPlus from './icons/IconPlus.vue';
+import IconSave from './icons/IconSave.vue';
 
 const props = defineProps({
   initialData: { type: Object, default: () => ({}) },
@@ -59,8 +61,16 @@ function handleSubmit() {
     <div class="flex gap-3">
       <button
         type="submit"
-        class="bg-accent text-primary rounded px-4 py-2"
+        class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2"
       >
+        <IconSave
+          v-if="isEditMode"
+          class="w-4 h-4"
+        />
+        <IconPlus
+          v-else
+          class="w-4 h-4"
+        />
         {{ isEditMode ? 'Save' : 'Add guest' }}
       </button>
       <button

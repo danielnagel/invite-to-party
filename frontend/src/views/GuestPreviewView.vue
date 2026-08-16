@@ -30,7 +30,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-col flex-1">
     <div class="flex items-center justify-between gap-3 bg-black/60 px-4 py-3 text-sm text-primary">
       <router-link
         :to="`/parties/${partyId}`"
@@ -49,6 +49,9 @@ onBeforeUnmount(() => {
       {{ errorMessage }}
     </p>
 
-    <GuestView v-if="guestSession.isVerified" />
+    <GuestView
+      v-if="guestSession.isVerified"
+      class="flex-1"
+    />
   </div>
 </template>

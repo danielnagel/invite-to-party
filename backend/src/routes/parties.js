@@ -79,6 +79,7 @@ router.get('/parties/:id/preview', requireAuth, async (req, res) => {
     status: 'pending',
     companion_response: null,
     expired: party.expired,
+    guests: [],
     party: {
       id: party.id,
       name: party.name,

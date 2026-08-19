@@ -80,4 +80,32 @@ describe('GuestView', () => {
     expect(screen.getByText(/already took place/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Yes, count me in' })).not.toBeInTheDocument();
   });
+
+  it('greets a group invite by all names and shows one RSVP row per guest', () => {
+    seedGuestSession({
+      guests: [
+        { id: 'guest-1', name: 'Bob', status: 'pending' },
+        { id: 'guest-2', name: 'Carol', status: 'pending' },
+      ],
+    });
+    render(GuestView, { global: { plugins: [i18n] } });
+
+    expect(screen.getByText('Hello Anna, Bob, and Carol')).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: 'Yes, count me in' })).toHaveLength(3);
+    expect(screen.getByText('Bob')).toBeInTheDocument();
+    expect(screen.getByText('Carol')).toBeInTheDocument();
+  });
+
+  it('submits a non-primary guest\'s response to their own rsvp endpoint', async () => {
+    apiClient.post.mockResolvedValueOnce({ id: 'guest-1', status: 'accepted' });
+    seedGuestSession({
+      guests: [{ id: 'guest-1', name: 'Bob', status: 'pending' }],
+    });
+    render(GuestView, { global: { plugins: [i18n] } });
+
+    const acceptButtons = screen.getAllByRole('button', { name: 'Yes, count me in' });
+    await fireEvent.click(acceptButtons[1]);
+
+    expect(apiClient.post).toHaveBeenCalledWith('/invites/abc123/guests/guest-1/rsvp', { status: 'accepted' });
+  });
 });

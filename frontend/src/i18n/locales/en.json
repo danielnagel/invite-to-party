@@ -73,6 +73,10 @@
     "guestName": "Guest name",
     "greetingText": "Greeting text",
     "allowCompanion": "Allow companion",
+    "additionalGuests": "Additional guests",
+    "additionalGuestName": "Additional guest {position} name",
+    "addAdditionalGuest": "Add another guest",
+    "removeGuest": "Remove",
     "save": "Save",
     "add": "Add guest",
     "cancel": "Cancel"

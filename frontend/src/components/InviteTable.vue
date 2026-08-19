@@ -71,13 +71,25 @@ async function copyGuestUrl(invite) {
           class="border-b border-primary/10"
         >
           <td class="px-3 py-2">
-            {{ invite.guest_name }}
+            <div class="flex flex-col gap-1">
+              <span>{{ invite.guest_name }}</span>
+              <span
+                v-for="guest in invite.guests"
+                :key="guest.id"
+              >{{ guest.name }}</span>
+            </div>
           </td>
           <td class="px-3 py-2 font-mono text-sm">
             {{ invite.invite_code }}
           </td>
           <td class="px-3 py-2">
-            {{ partyExpired ? t('inviteTable.expired') : statusLabel(invite.status) }}
+            <div class="flex flex-col gap-1">
+              <span>{{ partyExpired ? t('inviteTable.expired') : statusLabel(invite.status) }}</span>
+              <span
+                v-for="guest in invite.guests"
+                :key="guest.id"
+              >{{ partyExpired ? t('inviteTable.expired') : statusLabel(guest.status) }}</span>
+            </div>
           </td>
           <td class="px-3 py-2">
             {{ invite.allow_companion ? (invite.companion_response ? t('inviteTable.yes') : t('inviteTable.no')) : '-' }}

@@ -17,6 +17,7 @@ export const useGuestSessionStore = defineStore('guestSession', {
     status: 'pending',
     companionResponse: null,
     expired: false,
+    guests: [],
     party: null,
     isPreview: false,
   }),
@@ -34,6 +35,7 @@ export const useGuestSessionStore = defineStore('guestSession', {
       this.status = data.status;
       this.companionResponse = data.companion_response;
       this.expired = data.expired;
+      this.guests = data.guests ?? [];
       this.party = data.party;
       sessionStorage.setItem(STORAGE_KEY, code);
     },
@@ -52,6 +54,7 @@ export const useGuestSessionStore = defineStore('guestSession', {
       this.status = data.status;
       this.companionResponse = data.companion_response;
       this.expired = data.expired;
+      this.guests = data.guests ?? [];
       this.party = data.party;
       this.isPreview = true;
     },
@@ -92,6 +95,26 @@ export const useGuestSessionStore = defineStore('guestSession', {
         // Backend responds 410 once the party's event_date has passed (see
         // backend/src/routes/invites.js) - flip to the expired state instead
         // of just showing a generic error.
+        if (error.status === 410) {
+          this.expired = true;
+        }
+        throw error;
+      }
+    },
+
+    /** Same as respond(), but for one of the invite's additional named guests. */
+    async respondGuest(guestId, status) {
+      if (this.isPreview) {
+        const guest = this.guests.find((g) => g.id === guestId);
+        if (guest) guest.status = status;
+        return;
+      }
+
+      try {
+        const data = await apiClient.post(`/invites/${this.code}/guests/${guestId}/rsvp`, { status });
+        const guest = this.guests.find((g) => g.id === guestId);
+        if (guest) guest.status = data.status;
+      } catch (error) {
         if (error.status === 410) {
           this.expired = true;
         }

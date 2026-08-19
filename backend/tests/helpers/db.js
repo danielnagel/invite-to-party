@@ -23,7 +23,9 @@ export async function resetDb() {
     );
   }
 
-  await pool.query('TRUNCATE TABLE invites, party_images, parties, hosts RESTART IDENTITY CASCADE');
+  await pool.query(
+    'TRUNCATE TABLE invite_guests, invites, party_images, parties, hosts RESTART IDENTITY CASCADE',
+  );
 }
 
 export async function closeDb() {
@@ -88,6 +90,22 @@ export async function insertInvite({ partyId, ...overrides }) {
       overrides.allow_companion ?? false,
       overrides.status ?? 'pending',
       overrides.companion_response ?? null,
+      overrides.responded_at ?? null,
+    ],
+  );
+
+  return rows[0];
+}
+
+export async function insertInviteGuest({ inviteId, ...overrides }) {
+  const { rows } = await pool.query(
+    `INSERT INTO invite_guests (invite_id, name, status, responded_at)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, invite_id, name, status, responded_at, created_at, updated_at`,
+    [
+      inviteId,
+      overrides.name ?? 'Additional Guest',
+      overrides.status ?? 'pending',
       overrides.responded_at ?? null,
     ],
   );

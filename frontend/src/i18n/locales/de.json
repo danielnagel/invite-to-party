@@ -73,6 +73,10 @@
     "guestName": "Name des Gasts",
     "greetingText": "Begrüßungstext",
     "allowCompanion": "Begleitung erlauben",
+    "additionalGuests": "Weitere Gäste",
+    "additionalGuestName": "Name von weiterem Gast {position}",
+    "addAdditionalGuest": "Weiteren Gast hinzufügen",
+    "removeGuest": "Entfernen",
     "save": "Speichern",
     "add": "Gast hinzufügen",
     "cancel": "Abbrechen"

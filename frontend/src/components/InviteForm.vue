@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import FormField from './FormField.vue';
 import IconPlus from './icons/IconPlus.vue';
 import IconSave from './icons/IconSave.vue';
+import IconX from './icons/IconX.vue';
 
 const props = defineProps({
   initialData: { type: Object, default: () => ({}) },
@@ -19,20 +20,40 @@ function emptyForm() {
     guest_name: '',
     greeting_text: '',
     allow_companion: false,
+    additional_guests: [],
   };
 }
 
-const form = reactive({ ...emptyForm(), ...props.initialData });
+function toAdditionalGuests(guests) {
+  return (guests ?? []).map((guest) => ({ id: guest.id, name: guest.name }));
+}
+
+const form = reactive({
+  ...emptyForm(),
+  ...props.initialData,
+  additional_guests: toAdditionalGuests(props.initialData.guests),
+});
 
 watch(
   () => props.initialData,
   (newData) => {
-    Object.assign(form, emptyForm(), newData);
+    Object.assign(form, emptyForm(), newData, { additional_guests: toAdditionalGuests(newData.guests) });
   },
 );
 
+function addAdditionalGuest() {
+  form.additional_guests.push({ id: null, name: '' });
+}
+
+function removeAdditionalGuest(index) {
+  form.additional_guests.splice(index, 1);
+}
+
 function handleSubmit() {
-  emit('submit', { ...form });
+  emit('submit', {
+    ...form,
+    additional_guests: form.additional_guests.filter((guest) => guest.name.trim()),
+  });
 }
 </script>
 
@@ -59,6 +80,38 @@ function handleSubmit() {
       :label="t('inviteForm.allowCompanion')"
       type="checkbox"
     />
+
+    <div class="flex flex-col gap-2">
+      <span class="text-sm font-medium">{{ t('inviteForm.additionalGuests') }}</span>
+      <div
+        v-for="(guest, index) in form.additional_guests"
+        :key="index"
+        class="flex items-center gap-2"
+      >
+        <input
+          v-model="guest.name"
+          type="text"
+          :aria-label="t('inviteForm.additionalGuestName', { position: index + 1 })"
+          class="flex-1 bg-secondary text-primary border border-primary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+        >
+        <button
+          type="button"
+          :aria-label="t('inviteForm.removeGuest')"
+          class="p-2 rounded hover:bg-primary/10 cursor-pointer"
+          @click="removeAdditionalGuest(index)"
+        >
+          <IconX class="w-4 h-4" />
+        </button>
+      </div>
+      <button
+        type="button"
+        class="flex items-center gap-2 self-start text-sm underline hover:text-accent cursor-pointer"
+        @click="addAdditionalGuest"
+      >
+        <IconPlus class="w-3.5 h-3.5" />
+        {{ t('inviteForm.addAdditionalGuest') }}
+      </button>
+    </div>
 
     <div class="flex gap-3">
       <button

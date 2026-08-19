@@ -14,7 +14,7 @@ import request from 'supertest';
 function buildTestApp() {
   const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    limit: 10,
+    limit: 30,
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: 'rate_limited' },
@@ -29,10 +29,10 @@ function buildTestApp() {
 }
 
 describe('publicRateLimiter configuration', () => {
-  it('allows 10 requests per window and rejects the 11th with 429', async () => {
+  it('allows 30 requests per window and rejects the 31st with 429', async () => {
     const app = buildTestApp();
 
-    for (let i = 0; i < 10; i += 1) {
+    for (let i = 0; i < 30; i += 1) {
       const response = await request(app).post('/probe');
       expect(response.status).toBe(200);
     }

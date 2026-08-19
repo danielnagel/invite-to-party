@@ -17,6 +17,13 @@ const router = useRouter();
 const partyId = route.params.id;
 const { t } = useI18n();
 
+// Stable reference for InviteForm's :initial-data fallback below. A fresh
+// `{}` literal there would get a new identity on every re-render of this
+// component (e.g. whenever `party` is reassigned after saving party
+// settings), which would make InviteForm's initialData watcher fire and
+// wipe out whatever the host had already typed into the invite form.
+const EMPTY_INVITE = {};
+
 const party = ref(null);
 const invites = ref([]);
 const errorMessage = ref('');
@@ -174,7 +181,7 @@ onMounted(() => {
       </h2>
       <InviteForm
         :key="editingInvite?.id ?? `new-${newInviteFormKey}`"
-        :initial-data="editingInvite ?? {}"
+        :initial-data="editingInvite ?? EMPTY_INVITE"
         :is-edit-mode="!!editingInvite"
         @submit="handleInviteSubmit"
         @cancel="handleCancelEditInvite"

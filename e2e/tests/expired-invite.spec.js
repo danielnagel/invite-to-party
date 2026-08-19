@@ -57,7 +57,9 @@ test('An invite in a party with a past event date shows the expired state and re
   const guestPage = await guestContext.newPage();
   await guestPage.goto(`/${partySlug}?invite-code=${invite.invite_code}`);
   await guestPage.waitForURL((url) => url.pathname === '/guest');
-  await expect(guestPage.getByText(/expired/i)).toBeVisible();
+  // Not just /expired/i: the fixture guest name itself contains "Expired",
+  // which would also match the "Hello ..." heading and make this ambiguous.
+  await expect(guestPage.getByText(/already took place/i)).toBeVisible();
 
   // Backend enforcement: rejects an RSVP change even if attempted directly,
   // regardless of what the UI shows.

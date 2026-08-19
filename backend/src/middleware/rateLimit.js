@@ -8,7 +8,11 @@ import rateLimit from 'express-rate-limit';
 // 10 in total.
 export const publicRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 10,
+  // A group invite (see invite_guests) means one browser/IP can legitimately
+  // fire several RSVP calls in a row - one per named guest - and households
+  // sharing one NAT IP compound that further. 30 is still a negligible
+  // number of guesses against an 8-character invite code.
+  limit: 30,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'rate_limited' },

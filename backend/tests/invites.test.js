@@ -25,7 +25,7 @@ describe('POST /api/parties/:id/invites', () => {
 
     const response = await agent
       .post(`/api/parties/${party.id}/invites`)
-      .send({ guest_name: 'Alice Anderson', greeting_text: 'Welcome!', allow_companion: true });
+      .send({ guest_name: 'Alice Anderson', greeting_text: 'Welcome!' });
 
     expect(response.status).toBe(201);
     expect(response.body.guest_name).toBe('Alice Anderson');
@@ -110,7 +110,7 @@ describe('GET /api/parties/:id/invites', () => {
 });
 
 describe('PUT /api/invites/:id', () => {
-  it('updates guest_name, greeting_text and allow_companion', async () => {
+  it('updates guest_name and greeting_text', async () => {
     const { agent } = await createAndLoginHost();
     const party = await insertParty();
     const invite = await insertInvite({ partyId: party.id, guest_name: 'Alice' });
@@ -118,13 +118,11 @@ describe('PUT /api/invites/:id', () => {
     const response = await agent.put(`/api/invites/${invite.id}`).send({
       guest_name: 'Alice Updated',
       greeting_text: 'New greeting',
-      allow_companion: true,
     });
 
     expect(response.status).toBe(200);
     expect(response.body.guest_name).toBe('Alice Updated');
     expect(response.body.greeting_text).toBe('New greeting');
-    expect(response.body.allow_companion).toBe(true);
   });
 
   it('returns 404 for an unknown invite', async () => {
@@ -210,14 +208,12 @@ describe('GET /api/invites/lookup (public)', () => {
     const party = await insertParty({
       name: 'Summer Party',
       slug: 'summer-party-lookup',
-      companion_field_visible: true,
     });
     const invite = await insertInvite({
       partyId: party.id,
       invite_code: 'ABCD1234',
       guest_name: 'Alice Anderson',
       greeting_text: 'Welcome!',
-      allow_companion: true,
     });
 
     const response = await request(app).get('/api/invites/lookup').query({ code: invite.invite_code });
@@ -226,7 +222,6 @@ describe('GET /api/invites/lookup (public)', () => {
     expect(response.body.guest_name).toBe('Alice Anderson');
     expect(response.body.expired).toBe(false);
     expect(response.body.party.slug).toBe('summer-party-lookup');
-    expect(response.body.party.companion_field_visible).toBe(true);
   });
 
   it('includes additional guests', async () => {
@@ -275,21 +270,19 @@ describe('GET /api/invites/lookup (public)', () => {
 });
 
 describe('POST /api/invites/:code/rsvp (public)', () => {
-  it('accepts with a companion response', async () => {
+  it('accepts an invite', async () => {
     const party = await insertParty({ slug: 'rsvp-party' });
     const invite = await insertInvite({
       partyId: party.id,
       invite_code: 'RSVP1234',
-      allow_companion: true,
     });
 
     const response = await request(app)
       .post(`/api/invites/${invite.invite_code}/rsvp`)
-      .send({ status: 'accepted', companion: true });
+      .send({ status: 'accepted' });
 
     expect(response.status).toBe(200);
     expect(response.body.status).toBe('accepted');
-    expect(response.body.companion_response).toBe(true);
     expect(response.body.responded_at).toBeTruthy();
   });
 

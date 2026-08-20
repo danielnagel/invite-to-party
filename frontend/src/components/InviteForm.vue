@@ -19,7 +19,6 @@ function emptyForm() {
   return {
     guest_name: '',
     greeting_text: '',
-    allow_companion: false,
     additional_guests: [],
   };
 }
@@ -74,13 +73,6 @@ function handleSubmit() {
       :label="t('inviteForm.greetingText')"
       type="textarea"
     />
-    <FormField
-      id="allow_companion"
-      v-model="form.allow_companion"
-      :label="t('inviteForm.allowCompanion')"
-      type="checkbox"
-    />
-
     <div class="flex flex-col gap-2">
       <span class="text-sm font-medium">{{ t('inviteForm.additionalGuests') }}</span>
       <div

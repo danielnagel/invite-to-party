@@ -28,14 +28,12 @@ const DEMO_PARTIES = [
     event_date: isoDate(30),
     accept_label: "I'll be there!",
     decline_label: "Can't make it",
-    companion_field_label: 'Bringing a plus one?',
-    companion_field_visible: true,
     images: ['party-1.png', 'party-2.png'],
     invites: [
-      { guest_name: 'Alice Anderson', greeting_text: 'So glad you can join us!', allow_companion: true, status: 'pending' },
-      { guest_name: 'Bob Baker', greeting_text: 'Looking forward to seeing you!', allow_companion: true, status: 'accepted', companion_response: true },
-      { guest_name: 'Carla Diaz', greeting_text: null, allow_companion: false, status: 'accepted', companion_response: null },
-      { guest_name: 'Dave Evans', greeting_text: 'Hope to catch you next time.', allow_companion: true, status: 'declined', companion_response: false },
+      { guest_name: 'Alice Anderson', greeting_text: 'So glad you can join us!', status: 'pending' },
+      { guest_name: 'Bob Baker', greeting_text: 'Looking forward to seeing you!', status: 'accepted' },
+      { guest_name: 'Carla Diaz', greeting_text: null, status: 'accepted' },
+      { guest_name: 'Dave Evans', greeting_text: 'Hope to catch you next time.', status: 'declined' },
     ],
   },
   {
@@ -44,12 +42,10 @@ const DEMO_PARTIES = [
     event_date: isoDate(-30),
     accept_label: 'Accept',
     decline_label: 'Decline',
-    companion_field_label: 'Bringing a companion?',
-    companion_field_visible: false,
     images: ['party-3.png'],
     invites: [
-      { guest_name: 'Erin Frank', greeting_text: null, allow_companion: false, status: 'accepted', companion_response: null },
-      { guest_name: 'Frank Green', greeting_text: null, allow_companion: false, status: 'pending' },
+      { guest_name: 'Erin Frank', greeting_text: null, status: 'accepted' },
+      { guest_name: 'Frank Green', greeting_text: null, status: 'pending' },
     ],
   },
 ];
@@ -81,9 +77,8 @@ async function seedImage(partyId, assetFilename) {
 
 async function seedParty(party) {
   const { rows } = await pool.query(
-    `INSERT INTO parties (name, slug, event_date, accept_label, decline_label,
-                           companion_field_label, companion_field_visible)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `INSERT INTO parties (name, slug, event_date, accept_label, decline_label)
+     VALUES ($1, $2, $3, $4, $5)
      RETURNING id`,
     [
       party.name,
@@ -91,8 +86,6 @@ async function seedParty(party) {
       party.event_date,
       party.accept_label,
       party.decline_label,
-      party.companion_field_label,
-      party.companion_field_visible,
     ],
   );
   const partyId = rows[0].id;
@@ -104,17 +97,14 @@ async function seedParty(party) {
   for (const invite of party.invites) {
     const respondedAt = invite.status === 'pending' ? null : new Date();
     await pool.query(
-      `INSERT INTO invites (party_id, invite_code, guest_name, greeting_text, allow_companion,
-                             status, companion_response, responded_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      `INSERT INTO invites (party_id, invite_code, guest_name, greeting_text, status, responded_at)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
       [
         partyId,
         generateInviteCode(),
         invite.guest_name,
         invite.greeting_text ?? null,
-        invite.allow_companion,
         invite.status,
-        invite.companion_response ?? null,
         respondedAt,
       ],
     );

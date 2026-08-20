@@ -13,9 +13,7 @@ export const useGuestSessionStore = defineStore('guestSession', {
     code: null,
     guestName: null,
     greetingText: null,
-    allowCompanion: false,
     status: 'pending',
-    companionResponse: null,
     expired: false,
     guests: [],
     party: null,
@@ -31,9 +29,7 @@ export const useGuestSessionStore = defineStore('guestSession', {
       this.code = code;
       this.guestName = data.guest_name;
       this.greetingText = data.greeting_text;
-      this.allowCompanion = data.allow_companion;
       this.status = data.status;
-      this.companionResponse = data.companion_response;
       this.expired = data.expired;
       this.guests = data.guests ?? [];
       this.party = data.party;
@@ -50,9 +46,7 @@ export const useGuestSessionStore = defineStore('guestSession', {
       this.code = null;
       this.guestName = data.guest_name;
       this.greetingText = data.greeting_text;
-      this.allowCompanion = data.allow_companion;
       this.status = data.status;
-      this.companionResponse = data.companion_response;
       this.expired = data.expired;
       this.guests = data.guests ?? [];
       this.party = data.party;
@@ -80,17 +74,15 @@ export const useGuestSessionStore = defineStore('guestSession', {
       }
     },
 
-    async respond(status, companion) {
+    async respond(status) {
       if (this.isPreview) {
         this.status = status;
-        this.companionResponse = companion;
         return;
       }
 
       try {
-        const data = await apiClient.post(`/invites/${this.code}/rsvp`, { status, companion });
+        const data = await apiClient.post(`/invites/${this.code}/rsvp`, { status });
         this.status = data.status;
-        this.companionResponse = data.companion_response;
       } catch (error) {
         // Backend responds 410 once the party's event_date has passed (see
         // backend/src/routes/invites.js) - flip to the expired state instead

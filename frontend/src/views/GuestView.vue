@@ -9,14 +9,9 @@ import IconX from '../components/icons/IconX.vue';
 const guestSession = useGuestSessionStore();
 const { t, locale } = useI18n();
 
-const companion = ref(!!guestSession.companionResponse);
 const errorMessage = ref('');
 const isSubmitting = ref(false);
 const submittingGuestId = ref(null);
-
-const showCompanionField = computed(
-  () => guestSession.party?.companion_field_visible && guestSession.allowCompanion,
-);
 
 // A group invite (guests.length > 0) is greeted by all names together; a
 // plain single-guest invite keeps the exact "Hello <name>" it always had.
@@ -30,7 +25,7 @@ async function respond(status) {
   errorMessage.value = '';
   isSubmitting.value = true;
   try {
-    await guestSession.respond(status, showCompanionField.value ? companion.value : false);
+    await guestSession.respond(status);
   } catch {
     errorMessage.value = t('guest.error');
   } finally {
@@ -74,18 +69,6 @@ async function respondGuest(guestId, status) {
       </p>
 
       <template v-else-if="guestSession.guests.length === 0">
-        <label
-          v-if="showCompanionField"
-          class="flex items-center gap-2 cursor-pointer"
-        >
-          <input
-            v-model="companion"
-            type="checkbox"
-            class="h-4 w-4 cursor-pointer"
-          >
-          <span class="cursor-pointer">{{ guestSession.party.companion_field_label }}</span>
-        </label>
-
         <div class="flex justify-center gap-3">
           <button
             type="button"
@@ -118,18 +101,6 @@ async function respondGuest(guestId, status) {
       </template>
 
       <template v-else>
-        <label
-          v-if="showCompanionField"
-          class="flex items-center gap-2 cursor-pointer"
-        >
-          <input
-            v-model="companion"
-            type="checkbox"
-            class="h-4 w-4 cursor-pointer"
-          >
-          <span class="cursor-pointer">{{ guestSession.party.companion_field_label }}</span>
-        </label>
-
         <div class="flex flex-col gap-4">
           <div class="flex flex-col items-center gap-2">
             <p class="font-medium">

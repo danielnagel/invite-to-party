@@ -21,8 +21,6 @@ function emptyForm() {
     event_date: '',
     accept_label: t('partyForm.defaultAcceptLabel'),
     decline_label: t('partyForm.defaultDeclineLabel'),
-    companion_field_label: t('partyForm.defaultCompanionFieldLabel'),
-    companion_field_visible: false,
   };
 }
 
@@ -78,18 +76,6 @@ function handleSubmit() {
       v-model="form.decline_label"
       :label="t('partyForm.declineLabel')"
     />
-    <FormField
-      id="companion_field_label"
-      v-model="form.companion_field_label"
-      :label="t('partyForm.companionFieldLabel')"
-    />
-    <FormField
-      id="companion_field_visible"
-      v-model="form.companion_field_visible"
-      :label="t('partyForm.companionFieldVisible')"
-      type="checkbox"
-    />
-
     <button
       type="submit"
       class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2 self-start hover:bg-accent/90 cursor-pointer"

@@ -23,9 +23,7 @@ function seedGuestSession(overrides = {}) {
     code: 'abc123',
     guestName: 'Anna',
     greetingText: 'So happy you can join us!',
-    allowCompanion: true,
     status: 'pending',
-    companionResponse: null,
     expired: false,
     party: {
       id: 'party-1',
@@ -33,8 +31,6 @@ function seedGuestSession(overrides = {}) {
       slug: 'summer',
       accept_label: 'Yes, count me in',
       decline_label: 'Sorry, not this time',
-      companion_field_label: 'Bringing someone?',
-      companion_field_visible: true,
     },
     ...overrides,
   });
@@ -55,22 +51,14 @@ describe('GuestView', () => {
     expect(screen.getByText('So happy you can join us!')).toBeInTheDocument();
   });
 
-  it('shows the companion field only when the party and the invite both allow it', () => {
-    seedGuestSession({ allowCompanion: false });
-    render(GuestView, { global: { plugins: [i18n] } });
-
-    expect(screen.queryByText('Bringing someone?')).not.toBeInTheDocument();
-  });
-
   it('submits the accept response with the party-specific label', async () => {
-    apiClient.post.mockResolvedValueOnce({ status: 'accepted', companion_response: true, expired: false });
+    apiClient.post.mockResolvedValueOnce({ status: 'accepted', expired: false });
     seedGuestSession();
     render(GuestView, { global: { plugins: [i18n] } });
 
-    await fireEvent.click(screen.getByRole('checkbox'));
     await fireEvent.click(screen.getByRole('button', { name: 'Yes, count me in' }));
 
-    expect(apiClient.post).toHaveBeenCalledWith('/invites/abc123/rsvp', { status: 'accepted', companion: true });
+    expect(apiClient.post).toHaveBeenCalledWith('/invites/abc123/rsvp', { status: 'accepted' });
   });
 
   it('shows a plain expired state instead of the RSVP form', () => {

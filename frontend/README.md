@@ -1,8 +1,8 @@
 # Frontend
 
 Vue 3 + Vite + Tailwind CSS. No vue-i18n: all guest-facing RSVP copy
-(accept/decline/companion labels, greeting text) is host-authored free text
-stored per party, not translated UI strings.
+(accept/decline labels, greeting text) is host-authored free text stored per
+party, not translated UI strings.
 
 ## Dev commands
 
@@ -35,8 +35,7 @@ on port 3000 (`npm run dev --workspace=backend`).
 - **`stores/guestSession.js`** (Pinia) – a guest's resolved invite: the code
   itself is kept in `sessionStorage` so a reload on `/guest` re-resolves it
   instead of bouncing back to the entry form; `verify(code)` calls the
-  public lookup endpoint, `respond(status, companion)` submits/updates the
-  RSVP.
+  public lookup endpoint, `respond(status)` submits/updates the RSVP.
 - **`api/client.js`** – fetch wrapper with `credentials: 'include'` (host
   auth cookie) and centralized `401` handling (redirects to `/`, the host
   login, except for the initial `/auth/me` check). Also supports `FormData`
@@ -46,11 +45,9 @@ on port 3000 (`npm run dev --workspace=backend`).
   guest type one in. Checks that the resolved party's slug matches the URL,
   rejecting codes that belong to a different party.
 - **`views/GuestView.vue`** – greets the guest, shows the optional
-  greeting text, accept/decline buttons with the party's own labels, a
-  companion checkbox (only if the party's `companion_field_visible` **and**
-  this invite's `allow_companion` are both true), resubmittable until the
-  party's `event_date` passes, after which a plain expired message replaces
-  the form.
+  greeting text, accept/decline buttons with the party's own labels,
+  resubmittable until the party's `event_date` passes, after which a plain
+  expired message replaces the form.
 - **`views/HostLoginView.vue`** – host login form.
 - **`views/HostPartiesView.vue`** – lists parties and creates new ones
   (`components/PartyForm.vue`) in a single view.
@@ -66,14 +63,14 @@ on port 3000 (`npm run dev --workspace=backend`).
   background-position: center` – static, no zoom animation. Falls back to
   the neutral color if the party (or, for a host, all of their parties) has
   no uploaded images.
-- **`components/PartyForm.vue`** – name, slug, event date, RSVP labels,
-  companion-field visibility; reused for both create and edit.
+- **`components/PartyForm.vue`** – name, slug, event date, RSVP labels;
+  reused for both create and edit.
 - **`components/ImageGallery.vue`** – thumbnail grid with per-image delete
   and a file input for upload; self-contained (fetches/refetches its own
   party's images).
 - **`components/InviteForm.vue`** / **`components/InviteTable.vue`** – add
-  or edit a guest invite (name, greeting text, whether a companion is
-  allowed) and list all of a party's invites with their live status.
+  or edit a guest invite (name, greeting text, additional named guests) and
+  list all of a party's invites with their live status.
 - **`components/FormField.vue`** – generic label+input/textarea/checkbox.
 - **`components/ConfirmDialog.vue`** – generic delete confirmation dialog.
 - **`components/AppHeader.vue`** / **`components/AppFooter.vue`** – logo,
@@ -93,12 +90,10 @@ the project plan (`parties`, `invites`, `party_images`).
 - `GET /parties/:id/invites`, `POST /parties/:id/invites`,
   `PUT /invites/:id`, `DELETE /invites/:id` – host-only.
 - `GET /invites/lookup?code=` (public) – resolves an invite code to
-  `{ guest_name, greeting_text, allow_companion, status, companion_response,
-  expired, party: { id, name, slug, accept_label, decline_label,
-  companion_field_label, companion_field_visible } }`.
-- `POST /invites/:code/rsvp` (public) – body `{ status, companion }`,
-  returns the updated `{ status, companion_response, expired }`; rejected
-  once expired.
+  `{ guest_name, greeting_text, status, expired,
+  party: { id, name, slug, accept_label, decline_label } }`.
+- `POST /invites/:code/rsvp` (public) – body `{ status }`, returns the
+  updated `{ status, expired }`; rejected once expired.
 - `GET /images/:id/file` (public) – streams the stored image bytes.
 - `GET /parties/:id/random-background` (public) – `{ url }` for one random
   image of that party, used on the guest-facing pages.

@@ -64,7 +64,7 @@ test('An invite in a party with a past event date shows the expired state and re
   // Backend enforcement: rejects an RSVP change even if attempted directly,
   // regardless of what the UI shows.
   const rsvpResponse = await request.post(`/api/invites/${invite.invite_code}/rsvp`, {
-    data: { status: 'accepted', companion: false },
+    data: { status: 'accepted' },
   });
   expect(rsvpResponse.ok()).toBeFalsy();
 

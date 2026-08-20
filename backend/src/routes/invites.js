@@ -8,20 +8,20 @@ import { generateInviteCode } from '../lib/codes.js';
 const router = Router();
 
 const INVITE_COLUMNS = `id, party_id, invite_code, guest_name, greeting_text,
-  allow_companion, status, companion_response, created_at, updated_at, responded_at`;
+  status, created_at, updated_at, responded_at`;
 
 const GUEST_COLUMNS = 'id, invite_id, name, status, responded_at, created_at, updated_at';
 
 const MAX_CODE_ATTEMPTS = 5;
 
-async function insertInvite(partyId, { guestName, greetingText, allowCompanion }) {
+async function insertInvite(partyId, { guestName, greetingText }) {
   for (let attempt = 0; attempt < MAX_CODE_ATTEMPTS; attempt += 1) {
     try {
       const { rows } = await pool.query(
-        `INSERT INTO invites (party_id, invite_code, guest_name, greeting_text, allow_companion)
-         VALUES ($1, $2, $3, $4, $5)
+        `INSERT INTO invites (party_id, invite_code, guest_name, greeting_text)
+         VALUES ($1, $2, $3, $4)
          RETURNING ${INVITE_COLUMNS}`,
-        [partyId, generateInviteCode(), guestName, greetingText ?? null, Boolean(allowCompanion)],
+        [partyId, generateInviteCode(), guestName, greetingText ?? null],
       );
       return rows[0];
     } catch (error) {
@@ -137,7 +137,6 @@ router.post('/parties/:id/invites', requireAuth, blockInDemoMode, async (req, re
   const {
     guest_name: guestName,
     greeting_text: greetingText,
-    allow_companion: allowCompanion,
     additional_guests: additionalGuests,
   } = req.body ?? {};
 
@@ -150,7 +149,7 @@ router.post('/parties/:id/invites', requireAuth, blockInDemoMode, async (req, re
     return res.status(404).json({ error: 'party_not_found' });
   }
 
-  const invite = await insertInvite(req.params.id, { guestName, greetingText, allowCompanion });
+  const invite = await insertInvite(req.params.id, { guestName, greetingText });
   const guests = await insertAdditionalGuests(
     invite.id,
     sanitizeAdditionalGuests(additionalGuests).map((entry) => entry.name),
@@ -162,7 +161,6 @@ router.put('/invites/:id', requireAuth, blockInDemoMode, async (req, res) => {
   const {
     guest_name: guestName,
     greeting_text: greetingText,
-    allow_companion: allowCompanion,
     additional_guests: additionalGuests,
   } = req.body ?? {};
 
@@ -172,10 +170,10 @@ router.put('/invites/:id', requireAuth, blockInDemoMode, async (req, res) => {
 
   const { rows } = await pool.query(
     `UPDATE invites
-     SET guest_name = $1, greeting_text = $2, allow_companion = $3, updated_at = now()
-     WHERE id = $4
+     SET guest_name = $1, greeting_text = $2, updated_at = now()
+     WHERE id = $3
      RETURNING ${INVITE_COLUMNS}`,
-    [guestName, greetingText ?? null, Boolean(allowCompanion), req.params.id],
+    [guestName, greetingText ?? null, req.params.id],
   );
 
   if (rows.length === 0) {
@@ -206,11 +204,9 @@ router.get('/invites/lookup', publicRateLimiter, async (req, res) => {
   }
 
   const { rows } = await pool.query(
-    `SELECT i.id, i.invite_code, i.guest_name, i.greeting_text, i.allow_companion, i.status,
-            i.companion_response,
+    `SELECT i.id, i.invite_code, i.guest_name, i.greeting_text, i.status,
             p.id AS party_id, p.name AS party_name, p.slug AS party_slug,
             p.event_date, p.accept_label, p.decline_label,
-            p.companion_field_label, p.companion_field_visible,
             (p.event_date < CURRENT_DATE) AS expired
      FROM invites i
      JOIN parties p ON p.id = i.party_id
@@ -228,9 +224,7 @@ router.get('/invites/lookup', publicRateLimiter, async (req, res) => {
     invite_code: row.invite_code,
     guest_name: row.guest_name,
     greeting_text: row.greeting_text,
-    allow_companion: row.allow_companion,
     status: row.status,
-    companion_response: row.companion_response,
     expired: row.expired,
     guests: (guestsByInvite.get(row.id) ?? []).map((guest) => ({
       id: guest.id,
@@ -244,14 +238,12 @@ router.get('/invites/lookup', publicRateLimiter, async (req, res) => {
       event_date: row.event_date,
       accept_label: row.accept_label,
       decline_label: row.decline_label,
-      companion_field_label: row.companion_field_label,
-      companion_field_visible: row.companion_field_visible,
     },
   });
 });
 
 router.post('/invites/:code/rsvp', publicRateLimiter, async (req, res) => {
-  const { status, companion } = req.body ?? {};
+  const { status } = req.body ?? {};
 
   if (!['accepted', 'declined'].includes(status)) {
     return res.status(400).json({ error: 'invalid_status' });
@@ -275,10 +267,10 @@ router.post('/invites/:code/rsvp', publicRateLimiter, async (req, res) => {
 
   const { rows: updated } = await pool.query(
     `UPDATE invites
-     SET status = $1, companion_response = $2, responded_at = now(), updated_at = now()
-     WHERE id = $3
+     SET status = $1, responded_at = now(), updated_at = now()
+     WHERE id = $2
      RETURNING ${INVITE_COLUMNS}`,
-    [status, companion ?? null, rows[0].id],
+    [status, rows[0].id],
   );
 
   return res.status(200).json(updated[0]);

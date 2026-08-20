@@ -30,11 +30,9 @@ function createTestRouter() {
 const lookupResponse = {
   guest_name: 'Anna',
   greeting_text: '',
-  allow_companion: true,
   status: 'pending',
-  companion_response: null,
   expired: false,
-  party: { id: 'party-1', slug: 'summer', accept_label: 'Yes', decline_label: 'No', companion_field_visible: true },
+  party: { id: 'party-1', slug: 'summer', accept_label: 'Yes', decline_label: 'No' },
 };
 
 describe('GuestEntryView', () => {

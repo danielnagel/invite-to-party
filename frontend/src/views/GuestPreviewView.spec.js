@@ -35,9 +35,7 @@ function previewResponse(overrides = {}) {
   return {
     guest_name: 'Guest Name',
     greeting_text: null,
-    allow_companion: true,
     status: 'pending',
-    companion_response: null,
     expired: false,
     party: {
       id: 'party-1',
@@ -45,8 +43,6 @@ function previewResponse(overrides = {}) {
       slug: 'summer',
       accept_label: 'Accept',
       decline_label: 'Decline',
-      companion_field_label: 'Bringing a companion?',
-      companion_field_visible: true,
     },
     ...overrides,
   };

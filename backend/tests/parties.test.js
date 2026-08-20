@@ -31,10 +31,9 @@ describe('POST /api/parties', () => {
     expect(response.body.slug).toBe('summer-rooftop');
     expect(response.body.accept_label).toBe('Accept');
     expect(response.body.decline_label).toBe('Decline');
-    expect(response.body.companion_field_visible).toBe(false);
   });
 
-  it('accepts custom labels and companion visibility', async () => {
+  it('accepts custom labels', async () => {
     const { agent } = await createAndLoginHost();
 
     const response = await agent.post('/api/parties').send({
@@ -43,13 +42,10 @@ describe('POST /api/parties', () => {
       event_date: '2099-06-01',
       accept_label: "We'll be there",
       decline_label: 'Sadly not',
-      companion_field_label: 'Plus one?',
-      companion_field_visible: true,
     });
 
     expect(response.status).toBe(201);
     expect(response.body.accept_label).toBe("We'll be there");
-    expect(response.body.companion_field_visible).toBe(true);
   });
 
   it('rejects a missing name', async () => {
@@ -139,7 +135,6 @@ describe('GET /api/parties/:id/preview', () => {
     const party = await insertParty({
       name: 'Summer Party',
       accept_label: "We'll be there",
-      companion_field_visible: true,
     });
 
     const response = await agent.get(`/api/parties/${party.id}/preview`);
@@ -181,13 +176,11 @@ describe('PUT /api/parties/:id', () => {
       name: 'New Name',
       slug: 'new-slug',
       event_date: '2099-07-01',
-      companion_field_visible: true,
     });
 
     expect(response.status).toBe(200);
     expect(response.body.name).toBe('New Name');
     expect(response.body.slug).toBe('new-slug');
-    expect(response.body.companion_field_visible).toBe(true);
     // Omitted labels keep their existing values instead of being wiped.
     expect(response.body.accept_label).toBe('Accept');
   });

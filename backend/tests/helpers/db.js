@@ -45,19 +45,15 @@ export async function insertHost({ username, passwordHash, createdAt, lastLoginA
 
 export async function insertParty(overrides = {}) {
   const { rows } = await pool.query(
-    `INSERT INTO parties (name, slug, event_date, accept_label, decline_label,
-                           companion_field_label, companion_field_visible)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)
-     RETURNING id, name, slug, event_date, accept_label, decline_label,
-               companion_field_label, companion_field_visible, created_at, updated_at`,
+    `INSERT INTO parties (name, slug, event_date, accept_label, decline_label)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id, name, slug, event_date, accept_label, decline_label, created_at, updated_at`,
     [
       overrides.name ?? 'Summer Party',
       overrides.slug ?? `party-${Math.random().toString(36).slice(2)}`,
       overrides.event_date ?? '2099-01-01',
       overrides.accept_label ?? 'Accept',
       overrides.decline_label ?? 'Decline',
-      overrides.companion_field_label ?? 'Bringing a companion?',
-      overrides.companion_field_visible ?? false,
     ],
   );
 
@@ -77,19 +73,16 @@ export async function insertPartyImage({ partyId, filename, storagePath }) {
 
 export async function insertInvite({ partyId, ...overrides }) {
   const { rows } = await pool.query(
-    `INSERT INTO invites (party_id, invite_code, guest_name, greeting_text, allow_companion,
-                           status, companion_response, responded_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-     RETURNING id, party_id, invite_code, guest_name, greeting_text, allow_companion,
-               status, companion_response, created_at, updated_at, responded_at`,
+    `INSERT INTO invites (party_id, invite_code, guest_name, greeting_text, status, responded_at)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING id, party_id, invite_code, guest_name, greeting_text,
+               status, created_at, updated_at, responded_at`,
     [
       partyId,
       overrides.invite_code ?? `CODE${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
       overrides.guest_name ?? 'Guest Name',
       overrides.greeting_text ?? null,
-      overrides.allow_companion ?? false,
       overrides.status ?? 'pending',
-      overrides.companion_response ?? null,
       overrides.responded_at ?? null,
     ],
   );

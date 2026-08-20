@@ -12,15 +12,13 @@ const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 const PARTY_COLUMNS = `id, name, slug, event_date, accept_label, decline_label,
-  companion_field_label, companion_field_visible, created_at, updated_at`;
+  created_at, updated_at`;
 
 // Mirrors the column defaults in migrations/*_create-parties.js. Applied in
 // JS (rather than relying on the DB's DEFAULT) because "DEFAULT" is only
 // valid as a literal in an INSERT VALUES list, not as a COALESCE argument.
 const DEFAULT_ACCEPT_LABEL = 'Accept';
 const DEFAULT_DECLINE_LABEL = 'Decline';
-const DEFAULT_COMPANION_FIELD_LABEL = 'Bringing a companion?';
-const DEFAULT_COMPANION_FIELD_VISIBLE = false;
 
 function isValidPartyInput({ name, slug, event_date: eventDate }) {
   if (!name || !String(name).trim()) return false;
@@ -75,9 +73,7 @@ router.get('/parties/:id/preview', requireAuth, async (req, res) => {
   return res.status(200).json({
     guest_name: 'Guest Name',
     greeting_text: null,
-    allow_companion: true,
     status: 'pending',
-    companion_response: null,
     expired: party.expired,
     guests: [],
     party: {
@@ -87,8 +83,6 @@ router.get('/parties/:id/preview', requireAuth, async (req, res) => {
       event_date: party.event_date,
       accept_label: party.accept_label,
       decline_label: party.decline_label,
-      companion_field_label: party.companion_field_label,
-      companion_field_visible: party.companion_field_visible,
     },
   });
 });
@@ -102,9 +96,8 @@ router.post('/parties', requireAuth, blockInDemoMode, async (req, res) => {
 
   try {
     const { rows } = await pool.query(
-      `INSERT INTO parties (name, slug, event_date, accept_label, decline_label,
-                             companion_field_label, companion_field_visible)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `INSERT INTO parties (name, slug, event_date, accept_label, decline_label)
+       VALUES ($1, $2, $3, $4, $5)
        RETURNING ${PARTY_COLUMNS}`,
       [
         body.name,
@@ -112,8 +105,6 @@ router.post('/parties', requireAuth, blockInDemoMode, async (req, res) => {
         body.event_date,
         body.accept_label ?? DEFAULT_ACCEPT_LABEL,
         body.decline_label ?? DEFAULT_DECLINE_LABEL,
-        body.companion_field_label ?? DEFAULT_COMPANION_FIELD_LABEL,
-        body.companion_field_visible ?? DEFAULT_COMPANION_FIELD_VISIBLE,
       ],
     );
     return res.status(201).json(rows[0]);
@@ -140,10 +131,8 @@ router.put('/parties/:id', requireAuth, blockInDemoMode, async (req, res) => {
            event_date = $3,
            accept_label = COALESCE($4, accept_label),
            decline_label = COALESCE($5, decline_label),
-           companion_field_label = COALESCE($6, companion_field_label),
-           companion_field_visible = COALESCE($7, companion_field_visible),
            updated_at = now()
-       WHERE id = $8
+       WHERE id = $6
        RETURNING ${PARTY_COLUMNS}`,
       [
         body.name,
@@ -151,8 +140,6 @@ router.put('/parties/:id', requireAuth, blockInDemoMode, async (req, res) => {
         body.event_date,
         body.accept_label ?? null,
         body.decline_label ?? null,
-        body.companion_field_label ?? null,
-        body.companion_field_visible ?? null,
         req.params.id,
       ],
     );

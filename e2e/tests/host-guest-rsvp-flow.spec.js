@@ -3,10 +3,10 @@ import { test, expect } from '@playwright/test';
 import { runBackendCli } from '../helpers/dockerCli.js';
 
 // Covers the plan's core E2E flow (Testing / E2E section): host creates a
-// party and an invite, a guest opens the invite link and accepts with a
-// companion, the host sees the updated status live, then the guest switches
-// their answer to decline and the host sees that update too.
-test('Host creates a party and an invite, guest accepts with a companion then switches to decline, host sees each update live', async ({
+// party and an invite, a guest opens the invite link and accepts, the host
+// sees the updated status live, then the guest switches their answer to
+// decline and the host sees that update too.
+test('Host creates a party and an invite, guest accepts then switches to decline, host sees each update live', async ({
   page,
   browser,
 }) => {
@@ -21,7 +21,6 @@ test('Host creates a party and an invite, guest accepts with a companion then sw
   const futureEventDate = '2099-12-31';
   const acceptLabel = 'Yes, I will be there!';
   const declineLabel = 'Sorry, cannot make it';
-  const companionFieldLabel = 'Bringing a companion?';
   const guestName = `E2E Guest ${Date.now()}`;
   const greetingText = 'We are so happy to celebrate with you!';
 
@@ -43,19 +42,16 @@ test('Host creates a party and an invite, guest accepts with a companion then sw
   await page.getByRole('button', { name: 'Create party' }).click();
   const party = await (await createPartyResponse).json();
 
-  // Party settings (labels, companion field) live on the party's own page
-  // (plan: `/parties/:id`), not on the creation form.
+  // Party settings (labels) live on the party's own page (plan:
+  // `/parties/:id`), not on the creation form.
   await page.goto(`/parties/${party.id}`);
   await page.getByLabel('Accept label').fill(acceptLabel);
   await page.getByLabel('Decline label').fill(declineLabel);
-  await page.getByLabel('Companion field label').fill(companionFieldLabel);
-  await page.getByLabel('Companion field visible').check();
   await page.getByRole('button', { name: 'Save' }).click();
 
-  // --- Host: create an invite for a guest, with companion allowed ---
+  // --- Host: create an invite for a guest ---
   await page.getByLabel('Guest name').fill(guestName);
   await page.getByLabel('Greeting text').fill(greetingText);
-  await page.getByLabel('Allow companion').check();
   const createInviteResponse = page.waitForResponse(
     (response) => response.request().method() === 'POST'
       && new URL(response.url()).pathname === `/api/parties/${party.id}/invites`,
@@ -66,7 +62,7 @@ test('Host creates a party and an invite, guest accepts with a companion then sw
   const inviteRow = page.getByRole('row', { name: new RegExp(guestName) });
   await expect(inviteRow).toContainText(/pending/i);
 
-  // --- Guest: opens the invite link in their own session and accepts with a companion ---
+  // --- Guest: opens the invite link in their own session and accepts ---
   const guestContext = await browser.newContext();
   const guestPage = await guestContext.newPage();
   await guestPage.goto(`/${partySlug}?invite-code=${invite.invite_code}`);
@@ -74,7 +70,6 @@ test('Host creates a party and an invite, guest accepts with a companion then sw
   await expect(guestPage.getByText(guestName)).toBeVisible();
   await expect(guestPage.getByText(greetingText)).toBeVisible();
 
-  await guestPage.getByLabel(companionFieldLabel).check();
   const acceptResponse = guestPage.waitForResponse(
     (response) => response.request().method() === 'POST'
       && new URL(response.url()).pathname === `/api/invites/${invite.invite_code}/rsvp`,
@@ -82,7 +77,6 @@ test('Host creates a party and an invite, guest accepts with a companion then sw
   await guestPage.getByRole('button', { name: acceptLabel }).click();
   const acceptResult = await (await acceptResponse).json();
   expect(acceptResult.status).toBe('accepted');
-  expect(acceptResult.companion_response).toBe(true);
 
   // --- Host: sees the accepted status live ---
   await page.reload();

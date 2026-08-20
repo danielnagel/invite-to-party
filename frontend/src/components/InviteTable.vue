@@ -57,9 +57,6 @@ async function copyGuestUrl(invite) {
             {{ t('inviteTable.status') }}
           </th>
           <th class="text-left border-b border-primary/20 px-3 py-2">
-            {{ t('inviteTable.companion') }}
-          </th>
-          <th class="text-left border-b border-primary/20 px-3 py-2">
             {{ t('inviteTable.actions') }}
           </th>
         </tr>
@@ -90,9 +87,6 @@ async function copyGuestUrl(invite) {
                 :key="guest.id"
               >{{ partyExpired ? t('inviteTable.expired') : statusLabel(guest.status) }}</span>
             </div>
-          </td>
-          <td class="px-3 py-2">
-            {{ invite.allow_companion ? (invite.companion_response ? t('inviteTable.yes') : t('inviteTable.no')) : '-' }}
           </td>
           <td class="px-3 py-2 flex gap-3 items-center">
             <button
@@ -128,7 +122,7 @@ async function copyGuestUrl(invite) {
         </tr>
         <tr v-if="invites.length === 0">
           <td
-            colspan="5"
+            colspan="4"
             class="px-3 py-6 text-center text-primary/60"
           >
             {{ t('inviteTable.empty') }}

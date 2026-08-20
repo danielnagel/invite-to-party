@@ -4,11 +4,7 @@
   <img src="frontend/public/logo.default.svg" alt="Logo" width="96" height="96">
 </p>
 
-Self-hosted invite-only RSVP tool: a host creates parties (name, vanity URL
-slug, background images, event date) and guest invites; each guest gets an
-invite code as their only credential, opens it at `/` or a party's vanity
-path, and can accept or decline (with an optional companion) until the
-party's date passes — no guest accounts, no self-registration.
+Self-hosted, invite-only party planner where guests RSVP with a personal invite code — no accounts required.
 
 ## Architecture
 

@@ -10,11 +10,6 @@ invite code as their only credential, opens it at `/` or a party's vanity
 path, and can accept or decline (with an optional companion) until the
 party's date passes — no guest accounts, no self-registration.
 
-**Try out the demo:** a live demo instance is not deployed yet — run
-`MODE=demo docker compose up --build` locally to explore the seeded demo
-host/party/invites. Host-side mutations (party/invite/image CRUD) are
-disabled in demo mode; the guest RSVP flow stays fully interactive.
-
 ## Architecture
 
 Monorepo with npm workspaces (`frontend`, `backend`, `e2e`):

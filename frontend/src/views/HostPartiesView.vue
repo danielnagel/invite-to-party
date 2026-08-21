@@ -3,10 +3,12 @@ import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { apiClient } from '../api/client';
+import { useHostAuthStore } from '../stores/hostAuth';
 import PartyForm from '../components/PartyForm.vue';
 import IconArrowRight from '../components/icons/IconArrowRight.vue';
 
 const { t, locale } = useI18n();
+const hostAuth = useHostAuthStore();
 
 const parties = ref([]);
 const isLoading = ref(false);
@@ -67,6 +69,7 @@ onMounted(loadParties);
       </h2>
       <PartyForm
         :key="formResetKey"
+        :disabled="hostAuth.demoMode"
         @submit="handleCreate"
       />
     </section>

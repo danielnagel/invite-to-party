@@ -9,6 +9,12 @@ export const useHostAuthStore = defineStore('hostAuth', {
   state: () => ({
     host: null,
     checked: false,
+    // Whether the backend is running with MODE=demo (see
+    // backend/src/middleware/demoMode.js). Host-side mutations are rejected
+    // there regardless of this flag; it only drives disabling the
+    // corresponding buttons in the UI so demo hosts aren't met with silent
+    // failures.
+    demoMode: false,
   }),
 
   getters: {
@@ -21,6 +27,7 @@ export const useHostAuthStore = defineStore('hostAuth', {
       try {
         const data = await apiClient.get('/auth/me');
         this.host = data ?? null;
+        this.demoMode = data?.demoMode ?? false;
       } catch {
         this.host = null;
       } finally {
@@ -32,6 +39,7 @@ export const useHostAuthStore = defineStore('hostAuth', {
     async login(username, password) {
       const data = await apiClient.post('/auth/login', { username, password });
       this.host = data ?? null;
+      this.demoMode = data?.demoMode ?? false;
       this.checked = true;
       return this.host;
     },

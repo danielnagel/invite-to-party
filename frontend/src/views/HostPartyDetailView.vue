@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 import { apiClient } from '../api/client';
+import { useHostAuthStore } from '../stores/hostAuth';
 import PartyForm from '../components/PartyForm.vue';
 import ImageGallery from '../components/ImageGallery.vue';
 import InviteForm from '../components/InviteForm.vue';
@@ -16,6 +17,7 @@ const route = useRoute();
 const router = useRouter();
 const partyId = route.params.id;
 const { t } = useI18n();
+const hostAuth = useHostAuthStore();
 
 // Stable reference for InviteForm's :initial-data fallback below. A fresh
 // `{}` literal there would get a new identity on every re-render of this
@@ -155,7 +157,9 @@ onMounted(() => {
         </h1>
         <button
           type="button"
-          class="text-sm text-red-400 underline hover:text-red-300 cursor-pointer"
+          class="text-sm text-red-400 underline hover:text-red-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline disabled:hover:text-red-400"
+          :disabled="hostAuth.demoMode"
+          :title="hostAuth.demoMode ? t('demoMode.disabledHint') : undefined"
           @click="showDeleteParty = true"
         >
           {{ t('hostPartyDetail.deleteParty') }}
@@ -164,6 +168,7 @@ onMounted(() => {
       <PartyForm
         :initial-data="party"
         is-edit-mode
+        :disabled="hostAuth.demoMode"
         @submit="handlePartySubmit"
       />
     </section>
@@ -172,7 +177,10 @@ onMounted(() => {
       v-if="party"
       class="bg-black/60 rounded-lg p-6"
     >
-      <ImageGallery :party-id="partyId" />
+      <ImageGallery
+        :party-id="partyId"
+        :disabled="hostAuth.demoMode"
+      />
     </section>
 
     <section class="bg-black/60 rounded-lg p-6 flex flex-col gap-6">
@@ -183,6 +191,7 @@ onMounted(() => {
         :key="editingInvite?.id ?? `new-${newInviteFormKey}`"
         :initial-data="editingInvite ?? EMPTY_INVITE"
         :is-edit-mode="!!editingInvite"
+        :disabled="hostAuth.demoMode"
         @submit="handleInviteSubmit"
         @cancel="handleCancelEditInvite"
       />
@@ -191,6 +200,7 @@ onMounted(() => {
         :invites="invites"
         :party-expired="isExpired"
         :party-slug="party?.slug ?? ''"
+        :disabled="hostAuth.demoMode"
         @edit="handleEditInvite"
         @delete="handleDeleteInviteRequest"
       />

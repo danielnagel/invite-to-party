@@ -39,6 +39,13 @@ async function handleLogout() {
     </router-link>
 
     <template v-if="hostAuth.isAuthenticated">
+      <span
+        v-if="hostAuth.demoMode"
+        class="ml-4 text-xs uppercase tracking-wide text-accent border border-accent/50 rounded px-2 py-0.5"
+      >
+        {{ t('demoMode.badge') }}
+      </span>
+
       <LanguageSwitch class="ml-4" />
 
       <button

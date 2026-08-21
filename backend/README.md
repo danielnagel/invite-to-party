@@ -150,3 +150,11 @@ varying RSVP states. Auto-run from the `Dockerfile` `CMD` when `MODE=demo`.
 With `MODE=demo` set, all host-side mutation routes (party/invite/image
 CRUD) respond `403`; the public RSVP endpoint (`POST /api/invites/:code/rsvp`)
 stays open.
+
+`GET /api/auth/login` and `GET /api/auth/me` include a `demoMode` flag so the
+frontend can disable the corresponding create/edit/delete buttons up front
+instead of only surfacing the `403` after the fact (see `stores/hostAuth.js`
+and the `disabled` props on `PartyForm`/`InviteForm`/`InviteTable`/
+`ImageGallery` in `frontend/src/components`). Navigation (login, the parties
+list, the guest-page preview) and the real guest RSVP flow behind an invite
+link are unaffected.

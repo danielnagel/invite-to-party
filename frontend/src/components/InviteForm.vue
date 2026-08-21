@@ -10,6 +10,8 @@ import IconX from './icons/IconX.vue';
 const props = defineProps({
   initialData: { type: Object, default: () => ({}) },
   isEditMode: { type: Boolean, default: false },
+  // Disables the submit button (e.g. MODE=demo, see stores/hostAuth.js).
+  disabled: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['submit', 'cancel']);
@@ -108,7 +110,9 @@ function handleSubmit() {
     <div class="flex gap-3">
       <button
         type="submit"
-        class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2 hover:bg-accent/90 cursor-pointer"
+        class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2 hover:bg-accent/90 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        :disabled="disabled"
+        :title="disabled ? t('demoMode.disabledHint') : undefined"
       >
         <IconSave
           v-if="isEditMode"

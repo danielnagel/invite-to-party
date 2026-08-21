@@ -4,6 +4,10 @@
     "madeBy": "Erstellt von Daniel",
     "language": "Sprache"
   },
+  "demoMode": {
+    "badge": "Demo-Modus",
+    "disabledHint": "Im Demo-Modus deaktiviert"
+  },
   "hostLogin": {
     "title": "Host-Login",
     "username": "Benutzername",

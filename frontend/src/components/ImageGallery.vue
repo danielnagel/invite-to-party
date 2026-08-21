@@ -6,6 +6,8 @@ import { apiClient } from '../api/client';
 
 const props = defineProps({
   partyId: { type: String, required: true },
+  // Disables upload/delete (e.g. MODE=demo, see stores/hostAuth.js).
+  disabled: { type: Boolean, default: false },
 });
 
 const { t } = useI18n();
@@ -81,8 +83,10 @@ onMounted(loadImages);
         >
         <button
           type="button"
-          class="absolute top-1 right-1 bg-red-600 text-white rounded-full h-6 w-6 text-xs leading-none hover:bg-red-700 cursor-pointer"
+          class="absolute top-1 right-1 bg-red-600 text-white rounded-full h-6 w-6 text-xs leading-none hover:bg-red-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           :aria-label="t('imageGallery.deleteImage')"
+          :disabled="disabled"
+          :title="disabled ? t('demoMode.disabledHint') : undefined"
           @click="handleDelete(image.id)"
         >
           &times;
@@ -102,7 +106,8 @@ onMounted(loadImages);
         ref="fileInput"
         type="file"
         accept="image/*"
-        :disabled="isUploading"
+        :disabled="isUploading || disabled"
+        :title="disabled ? t('demoMode.disabledHint') : undefined"
         @change="handleFileChange"
       >
     </label>

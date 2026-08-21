@@ -9,6 +9,9 @@ const props = defineProps({
   invites: { type: Array, default: () => [] },
   partyExpired: { type: Boolean, default: false },
   partySlug: { type: String, default: '' },
+  // Disables edit/delete (e.g. MODE=demo, see stores/hostAuth.js). Copying
+  // the guest link stays enabled since it doesn't mutate anything.
+  disabled: { type: Boolean, default: false },
 });
 
 defineEmits(['edit', 'delete']);
@@ -106,14 +109,18 @@ async function copyGuestUrl(invite) {
             </button>
             <button
               type="button"
-              class="underline text-sm hover:text-accent cursor-pointer"
+              class="underline text-sm hover:text-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline disabled:hover:text-inherit"
+              :disabled="disabled"
+              :title="disabled ? t('demoMode.disabledHint') : undefined"
               @click="$emit('edit', invite)"
             >
               {{ t('inviteTable.edit') }}
             </button>
             <button
               type="button"
-              class="underline text-sm text-red-400 hover:text-red-300 cursor-pointer"
+              class="underline text-sm text-red-400 hover:text-red-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline disabled:hover:text-red-400"
+              :disabled="disabled"
+              :title="disabled ? t('demoMode.disabledHint') : undefined"
               @click="$emit('delete', invite.id)"
             >
               {{ t('inviteTable.delete') }}

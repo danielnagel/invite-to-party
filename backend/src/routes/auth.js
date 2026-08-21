@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import pool from '../db/pool.js';
 import { requireAuth } from '../middleware/auth.js';
 import { publicRateLimiter } from '../middleware/rateLimit.js';
+import { isDemoMode } from '../middleware/demoMode.js';
 
 const router = Router();
 
@@ -52,11 +53,15 @@ router.post('/login', publicRateLimiter, async (req, res) => {
     maxAge: COOKIE_MAX_AGE_MS,
   });
 
-  return res.status(200).json({ username: host.username });
+  return res.status(200).json({ username: host.username, demoMode: isDemoMode() });
 });
 
 router.get('/me', requireAuth, (req, res) => {
-  return res.status(200).json({ id: req.currentHost.id, username: req.currentHost.username });
+  return res.status(200).json({
+    id: req.currentHost.id,
+    username: req.currentHost.username,
+    demoMode: isDemoMode(),
+  });
 });
 
 router.post('/logout', (req, res) => {

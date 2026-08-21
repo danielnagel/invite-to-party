@@ -59,7 +59,7 @@ describe('POST /api/auth/login', () => {
       .send({ username: 'keyboarder', password: 'correcthorsebatterystaple' });
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({ username: 'keyboarder' });
+    expect(response.body).toEqual({ username: 'keyboarder', demoMode: false });
 
     const cookies = response.headers['set-cookie'];
     expect(cookies).toBeTruthy();

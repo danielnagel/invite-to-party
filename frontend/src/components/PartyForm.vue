@@ -9,6 +9,9 @@ import IconSave from './icons/IconSave.vue';
 const props = defineProps({
   initialData: { type: Object, default: () => ({}) },
   isEditMode: { type: Boolean, default: false },
+  // Disables the submit button (e.g. MODE=demo, see stores/hostAuth.js).
+  // Fields stay editable so a demo host can still see how the form behaves.
+  disabled: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['submit']);
@@ -78,7 +81,9 @@ function handleSubmit() {
     />
     <button
       type="submit"
-      class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2 self-start hover:bg-accent/90 cursor-pointer"
+      class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2 self-start hover:bg-accent/90 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      :disabled="disabled"
+      :title="disabled ? t('demoMode.disabledHint') : undefined"
     >
       <IconSave
         v-if="isEditMode"

@@ -128,9 +128,15 @@ CLI. These commands connect to the database via the same `DATABASE_URL` as
 the API and are intended to run **inside the running backend container**:
 
 ```bash
-docker compose exec backend npm run host:create -- <username> <password>
+docker compose exec backend npm run host:create
 docker compose exec backend npm run host:list
 ```
+
+Run without arguments, `host:create` prompts for the username and password
+interactively (password input hidden) so neither ends up in shell history or
+`ps` output. For scripting, pass both as arguments instead - `-- <username>
+<password>`, no prompt, but then both are required (no mixing prompted and
+passed-in values).
 
 (Prerequisite: the `backend` service is running, e.g. via
 `docker compose up -d backend db`.)

@@ -11,8 +11,11 @@ function resolveInitialLocale() {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (SUPPORTED_LOCALES.includes(stored)) return stored;
 
-  // Baked in at image build time from the DEFAULT_LOCALE env var, see
-  // docker-compose.yml / frontend/Dockerfile.
+  // Set at container startup from the DEFAULT_LOCALE env var, see
+  // frontend/docker-entrypoint.d/40-locale-config.sh.
+  const runtimeLocale = window.__APP_LOCALE__;
+  if (SUPPORTED_LOCALES.includes(runtimeLocale)) return runtimeLocale;
+
   const buildTimeLocale = import.meta.env.VITE_DEFAULT_LOCALE;
   if (SUPPORTED_LOCALES.includes(buildTimeLocale)) return buildTimeLocale;
 

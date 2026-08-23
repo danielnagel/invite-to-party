@@ -19,10 +19,6 @@ COPY frontend ./frontend
 
 WORKDIR /app/frontend
 
-# Read by frontend/src/i18n/index.js via import.meta.env at build time.
-ARG VITE_DEFAULT_LOCALE=en
-ENV VITE_DEFAULT_LOCALE=${VITE_DEFAULT_LOCALE}
-
 # Read by frontend/src/components/AppHeader.vue via import.meta.env at build time.
 ARG VITE_APP_TITLE="Invite to Party"
 ENV VITE_APP_TITLE=${VITE_APP_TITLE}
@@ -34,6 +30,9 @@ FROM nginx:alpine
 
 COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/frontend/dist /usr/share/nginx/html
+
+COPY frontend/docker-entrypoint.d/40-locale-config.sh /docker-entrypoint.d/40-locale-config.sh
+RUN chmod +x /docker-entrypoint.d/40-locale-config.sh
 
 EXPOSE 80
 

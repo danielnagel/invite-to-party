@@ -19,10 +19,6 @@ COPY frontend ./frontend
 
 WORKDIR /app/frontend
 
-# Read by frontend/src/components/AppHeader.vue via import.meta.env at build time.
-ARG VITE_APP_TITLE="Invite to Party"
-ENV VITE_APP_TITLE=${VITE_APP_TITLE}
-
 RUN npm run build
 
 # ---- Runtime stage -------------------------------------------------------
@@ -32,7 +28,8 @@ COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/frontend/dist /usr/share/nginx/html
 
 COPY frontend/docker-entrypoint.d/40-locale-config.sh /docker-entrypoint.d/40-locale-config.sh
-RUN chmod +x /docker-entrypoint.d/40-locale-config.sh
+COPY frontend/docker-entrypoint.d/41-title-config.sh /docker-entrypoint.d/41-title-config.sh
+RUN chmod +x /docker-entrypoint.d/40-locale-config.sh /docker-entrypoint.d/41-title-config.sh
 
 EXPOSE 80
 

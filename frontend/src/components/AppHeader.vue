@@ -11,7 +11,9 @@ const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();
 
-const appTitle = import.meta.env.VITE_APP_TITLE || 'Invite to Party';
+// Set at container startup from the APP_TITLE env var, see
+// frontend/docker-entrypoint.d/41-title-config.sh.
+const appTitle = window.__APP_TITLE__ || import.meta.env.VITE_APP_TITLE || 'Invite to Party';
 const homeLink = computed(() => (hostAuth.isAuthenticated ? '/parties' : '/'));
 const isGuestPage = computed(() => route.name === 'guest' || route.name === 'host-party-preview');
 

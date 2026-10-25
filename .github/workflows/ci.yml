@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:16-alpine
+        image: postgres:18-alpine
         env:
           POSTGRES_USER: invite_to_party
           POSTGRES_PASSWORD: invite_to_party

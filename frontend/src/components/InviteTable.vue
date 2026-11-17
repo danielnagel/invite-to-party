@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import IconCopy from './icons/IconCopy.vue';
@@ -17,6 +17,12 @@ const props = defineProps({
 defineEmits(['edit', 'delete']);
 
 const { t } = useI18n();
+
+// Counts people, not invites: each invite's main guest plus all additional
+// guests attached to it.
+const guestCount = computed(() =>
+  props.invites.reduce((sum, invite) => sum + 1 + (invite.guests?.length ?? 0), 0),
+);
 
 const copiedInviteId = ref(null);
 let copiedTimeout = null;
@@ -47,6 +53,12 @@ async function copyGuestUrl(invite) {
 
 <template>
   <div class="overflow-x-auto">
+    <p
+      class="text-sm text-primary/80 mb-2"
+      data-testid="guest-count"
+    >
+      {{ t('inviteTable.guestCount', { count: guestCount }) }}
+    </p>
     <table class="min-w-full border-collapse">
       <thead>
         <tr>

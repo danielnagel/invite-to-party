@@ -93,6 +93,7 @@
     "cancel": "Cancel"
   },
   "inviteTable": {
+    "guestCount": "Guests: {count}",
     "guest": "Guest",
     "inviteCode": "Invite code",
     "status": "Status",

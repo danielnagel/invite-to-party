@@ -31,7 +31,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex flex-col flex-1">
-    <div class="flex items-center justify-between gap-3 bg-black/60 px-4 py-3 text-sm text-primary">
+    <div class="flex items-center justify-between gap-3 bg-black/80 backdrop-blur-sm px-4 py-3 text-sm text-primary">
       <router-link
         :to="`/parties/${partyId}`"
         class="flex items-center gap-1.5 text-primary/70 hover:text-primary hover:underline"

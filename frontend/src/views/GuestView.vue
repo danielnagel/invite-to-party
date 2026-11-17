@@ -48,7 +48,7 @@ async function respondGuest(guestId, status) {
 
 <template>
   <main class="flex flex-col items-center justify-center px-4 py-10">
-    <div class="w-full max-w-md bg-black/60 rounded-lg p-6 flex flex-col gap-6">
+    <div class="w-full max-w-md bg-black/80 backdrop-blur-sm rounded-lg p-6 flex flex-col gap-6">
       <div>
         <h1 class="text-2xl font-semibold">
           {{ t('guest.hello', { name: greetingName }) }}

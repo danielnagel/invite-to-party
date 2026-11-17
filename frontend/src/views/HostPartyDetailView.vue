@@ -123,7 +123,7 @@ onMounted(() => {
 
 <template>
   <main class="flex flex-col gap-8 px-4 py-8 max-w-3xl mx-auto w-full">
-    <div class="flex items-center justify-between bg-black/60 rounded-lg px-4 py-3">
+    <div class="flex items-center justify-between bg-black/80 backdrop-blur-sm rounded-lg px-4 py-3">
       <router-link
         to="/parties"
         class="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-accent hover:underline"
@@ -149,7 +149,7 @@ onMounted(() => {
 
     <section
       v-if="party"
-      class="bg-black/60 rounded-lg p-6 flex flex-col gap-4"
+      class="bg-black/80 backdrop-blur-sm rounded-lg p-6 flex flex-col gap-4"
     >
       <div class="flex items-center justify-between">
         <h1 class="text-2xl font-semibold">
@@ -175,7 +175,7 @@ onMounted(() => {
 
     <section
       v-if="party"
-      class="bg-black/60 rounded-lg p-6"
+      class="bg-black/80 backdrop-blur-sm rounded-lg p-6"
     >
       <ImageGallery
         :party-id="partyId"
@@ -183,7 +183,7 @@ onMounted(() => {
       />
     </section>
 
-    <section class="bg-black/60 rounded-lg p-6 flex flex-col gap-6">
+    <section class="bg-black/80 backdrop-blur-sm rounded-lg p-6 flex flex-col gap-6">
       <h2 class="text-lg font-semibold">
         {{ editingInvite ? t('hostPartyDetail.editInvite') : t('hostPartyDetail.addInvite') }}
       </h2>

@@ -16,7 +16,7 @@ async function handleLogout() {
 </script>
 
 <template>
-  <footer class="flex flex-col items-center gap-2 px-6 py-4 text-primary bg-black/60">
+  <footer class="flex flex-col items-center gap-2 px-6 py-4 text-primary bg-black/80 backdrop-blur-sm">
     <div class="md:hidden flex flex-col items-center gap-2">
       <img
         src="/favicon.svg"

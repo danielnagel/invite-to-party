@@ -26,7 +26,7 @@ async function handleLogout() {
 <template>
   <header
     v-if="!isGuestPage"
-    class="hidden md:flex items-center px-6 py-4 bg-black/60 text-primary"
+    class="hidden md:flex items-center px-6 py-4 bg-black/80 backdrop-blur-sm text-primary"
   >
     <router-link
       :to="homeLink"

@@ -63,7 +63,7 @@ onMounted(loadParties);
       {{ errorMessage }}
     </p>
 
-    <section class="bg-black/60 rounded-lg p-6">
+    <section class="bg-black/80 backdrop-blur-sm rounded-lg p-6">
       <h2 class="text-lg font-semibold mb-4">
         {{ t('hostParties.newParty') }}
       </h2>
@@ -88,7 +88,7 @@ onMounted(loadParties);
       <li
         v-for="party in parties"
         :key="party.id"
-        class="bg-black/60 rounded-lg hover:bg-black/80 transition-colors"
+        class="bg-black/80 backdrop-blur-sm rounded-lg hover:bg-black/90 transition-colors"
       >
         <router-link
           :to="`/parties/${party.id}`"

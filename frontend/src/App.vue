@@ -2,6 +2,7 @@
 import BackgroundLayer from './components/BackgroundLayer.vue';
 import AppHeader from './components/AppHeader.vue';
 import AppFooter from './components/AppFooter.vue';
+import ToastContainer from './components/ToastContainer.vue';
 </script>
 
 <template>
@@ -14,4 +15,5 @@ import AppFooter from './components/AppFooter.vue';
     <router-view class="flex-1" />
     <AppFooter />
   </div>
+  <ToastContainer />
 </template>

@@ -3,11 +3,13 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useGuestSessionStore } from '../stores/guestSession';
+import { useToastStore } from '../stores/toast';
 import IconCheck from '../components/icons/IconCheck.vue';
 import IconX from '../components/icons/IconX.vue';
 
 const guestSession = useGuestSessionStore();
 const { t, locale } = useI18n();
+const toast = useToastStore();
 
 const errorMessage = ref('');
 const isSubmitting = ref(false);
@@ -26,6 +28,9 @@ async function respond(status) {
   isSubmitting.value = true;
   try {
     await guestSession.respond(status);
+    // Preview answers aren't sent anywhere (see guestSession.respond()), so
+    // confirming a save there would be misleading.
+    if (!guestSession.isPreview) toast.success(t('guest.saved'));
   } catch {
     errorMessage.value = t('guest.error');
   } finally {
@@ -38,6 +43,7 @@ async function respondGuest(guestId, status) {
   submittingGuestId.value = guestId;
   try {
     await guestSession.respondGuest(guestId, status);
+    if (!guestSession.isPreview) toast.success(t('guest.saved'));
   } catch {
     errorMessage.value = t('guest.error');
   } finally {

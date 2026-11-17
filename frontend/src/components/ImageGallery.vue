@@ -3,6 +3,8 @@ import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { apiClient } from '../api/client';
+import { useToastStore } from '../stores/toast';
+import IconSpinner from './icons/IconSpinner.vue';
 
 const props = defineProps({
   partyId: { type: String, required: true },
@@ -11,10 +13,12 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
+const toast = useToastStore();
 
 const images = ref([]);
 const errorMessage = ref('');
 const isUploading = ref(false);
+const deletingImageId = ref(null);
 const fileInput = ref(null);
 
 async function loadImages() {
@@ -29,15 +33,15 @@ async function handleFileChange(event) {
   const file = event.target.files?.[0];
   if (!file) return;
 
-  errorMessage.value = '';
   isUploading.value = true;
   try {
     const formData = new FormData();
     formData.append('image', file);
     await apiClient.post(`/parties/${props.partyId}/images`, formData);
+    toast.success(t('imageGallery.uploaded'));
     await loadImages();
   } catch {
-    errorMessage.value = t('imageGallery.errorUpload');
+    toast.error(t('imageGallery.errorUpload'));
   } finally {
     isUploading.value = false;
     if (fileInput.value) fileInput.value.value = '';
@@ -45,12 +49,15 @@ async function handleFileChange(event) {
 }
 
 async function handleDelete(imageId) {
-  errorMessage.value = '';
+  deletingImageId.value = imageId;
   try {
     await apiClient.delete(`/parties/${props.partyId}/images/${imageId}`);
+    toast.success(t('imageGallery.deleted'));
     await loadImages();
   } catch {
-    errorMessage.value = t('imageGallery.errorDelete');
+    toast.error(t('imageGallery.errorDelete'));
+  } finally {
+    deletingImageId.value = null;
   }
 }
 
@@ -85,11 +92,17 @@ onMounted(loadImages);
           type="button"
           class="absolute top-1 right-1 bg-red-600 text-white rounded-full h-6 w-6 text-xs leading-none hover:bg-red-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           :aria-label="t('imageGallery.deleteImage')"
-          :disabled="disabled"
+          :disabled="disabled || deletingImageId === image.id"
           :title="disabled ? t('demoMode.disabledHint') : undefined"
           @click="handleDelete(image.id)"
         >
-          &times;
+          <IconSpinner
+            v-if="deletingImageId === image.id"
+            class="w-3.5 h-3.5 mx-auto"
+          />
+          <template v-else>
+            &times;
+          </template>
         </button>
       </div>
       <p
@@ -100,7 +113,7 @@ onMounted(loadImages);
       </p>
     </div>
 
-    <label class="self-start">
+    <label class="self-start flex items-center gap-3">
       <span class="sr-only">{{ t('imageGallery.uploadImage') }}</span>
       <input
         ref="fileInput"
@@ -110,6 +123,13 @@ onMounted(loadImages);
         :title="disabled ? t('demoMode.disabledHint') : undefined"
         @change="handleFileChange"
       >
+      <span
+        v-if="isUploading"
+        class="flex items-center gap-2 text-sm text-primary/70"
+      >
+        <IconSpinner class="w-4 h-4" />
+        {{ t('imageGallery.uploading') }}
+      </span>
     </label>
   </div>
 </template>

@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 
 import { apiClient } from '../api/client';
 import { useHostAuthStore } from '../stores/hostAuth';
+import { useToastStore } from '../stores/toast';
 import PartyForm from '../components/PartyForm.vue';
 import ImageGallery from '../components/ImageGallery.vue';
 import InviteForm from '../components/InviteForm.vue';
@@ -18,6 +19,7 @@ const router = useRouter();
 const partyId = route.params.id;
 const { t } = useI18n();
 const hostAuth = useHostAuthStore();
+const toast = useToastStore();
 
 // Stable reference for InviteForm's :initial-data fallback below. A fresh
 // `{}` literal there would get a new identity on every re-render of this
@@ -28,7 +30,12 @@ const EMPTY_INVITE = {};
 
 const party = ref(null);
 const invites = ref([]);
+// Only for load failures (the page can't be used without the data); action
+// results (save/delete) are reported as toasts, see stores/toast.js.
 const errorMessage = ref('');
+const isSavingParty = ref(false);
+const isSavingInvite = ref(false);
+const isDeleting = ref(false);
 const editingInvite = ref(null);
 const deleteInviteTarget = ref(null);
 const showDeleteParty = ref(false);
@@ -59,27 +66,34 @@ async function loadInvites() {
 }
 
 async function handlePartySubmit(data) {
-  errorMessage.value = '';
+  isSavingParty.value = true;
   try {
     party.value = await apiClient.put(`/parties/${partyId}`, data);
-  } catch {
-    errorMessage.value = t('hostPartyDetail.errorSaveParty');
+    toast.success(t('hostPartyDetail.partySaved'));
+  } catch (error) {
+    toast.error(error.status === 409 ? t('partyForm.errorSlugTaken') : t('hostPartyDetail.errorSaveParty'));
+  } finally {
+    isSavingParty.value = false;
   }
 }
 
 async function handleInviteSubmit(data) {
-  errorMessage.value = '';
+  isSavingInvite.value = true;
   try {
     if (editingInvite.value) {
       await apiClient.put(`/invites/${editingInvite.value.id}`, data);
       editingInvite.value = null;
+      toast.success(t('hostPartyDetail.inviteSaved'));
     } else {
       await apiClient.post(`/parties/${partyId}/invites`, data);
       newInviteFormKey.value += 1;
+      toast.success(t('hostPartyDetail.inviteCreated'));
     }
     await loadInvites();
   } catch {
-    errorMessage.value = t('hostPartyDetail.errorSaveInvite');
+    toast.error(t('hostPartyDetail.errorSaveInvite'));
+  } finally {
+    isSavingInvite.value = false;
   }
 }
 
@@ -97,21 +111,32 @@ function handleDeleteInviteRequest(id) {
 
 async function confirmDeleteInvite() {
   if (!deleteInviteTarget.value) return;
+  isDeleting.value = true;
   try {
     await apiClient.delete(`/invites/${deleteInviteTarget.value}`);
     deleteInviteTarget.value = null;
+    toast.success(t('hostPartyDetail.inviteDeleted'));
     await loadInvites();
   } catch {
-    errorMessage.value = t('hostPartyDetail.errorDeleteInvite');
+    deleteInviteTarget.value = null;
+    toast.error(t('hostPartyDetail.errorDeleteInvite'));
+  } finally {
+    isDeleting.value = false;
   }
 }
 
 async function confirmDeleteParty() {
+  isDeleting.value = true;
   try {
     await apiClient.delete(`/parties/${partyId}`);
+    // The toast store is global, so this message survives the navigation.
+    toast.success(t('hostPartyDetail.partyDeleted'));
     router.push('/parties');
   } catch {
-    errorMessage.value = t('hostPartyDetail.errorDeleteParty');
+    showDeleteParty.value = false;
+    toast.error(t('hostPartyDetail.errorDeleteParty'));
+  } finally {
+    isDeleting.value = false;
   }
 }
 
@@ -169,6 +194,7 @@ onMounted(() => {
         :initial-data="party"
         is-edit-mode
         :disabled="hostAuth.demoMode"
+        :busy="isSavingParty"
         @submit="handlePartySubmit"
       />
     </section>
@@ -192,6 +218,7 @@ onMounted(() => {
         :initial-data="editingInvite ?? EMPTY_INVITE"
         :is-edit-mode="!!editingInvite"
         :disabled="hostAuth.demoMode"
+        :busy="isSavingInvite"
         @submit="handleInviteSubmit"
         @cancel="handleCancelEditInvite"
       />
@@ -210,6 +237,7 @@ onMounted(() => {
       :open="!!deleteInviteTarget"
       :title="t('hostPartyDetail.deleteInviteTitle')"
       :message="t('hostPartyDetail.deleteInviteMessage')"
+      :busy="isDeleting"
       @confirm="confirmDeleteInvite"
       @cancel="deleteInviteTarget = null"
     />
@@ -218,6 +246,7 @@ onMounted(() => {
       :open="showDeleteParty"
       :title="t('hostPartyDetail.deletePartyTitle')"
       :message="t('hostPartyDetail.deletePartyMessage')"
+      :busy="isDeleting"
       @confirm="confirmDeleteParty"
       @cancel="showDeleteParty = false"
     />

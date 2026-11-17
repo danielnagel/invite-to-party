@@ -27,7 +27,8 @@
     "expired": "This invite has expired - the party already took place.",
     "changeAnswerHint": "You can change your answer any time before the party.",
     "error": "Could not save your answer, please try again.",
-    "partyInfo": "About the party"
+    "partyInfo": "About the party",
+    "saved": "Your answer has been saved."
   },
   "guestPreview": {
     "backToAdmin": "Back to admin",
@@ -40,7 +41,8 @@
     "loading": "Loading...",
     "empty": "No parties yet.",
     "errorLoad": "Could not load parties.",
-    "errorCreate": "Could not create the party."
+    "errorCreate": "Could not create the party.",
+    "created": "Party created."
   },
   "hostPartyDetail": {
     "backToParties": "Back to parties",
@@ -57,7 +59,12 @@
     "errorSaveParty": "Could not save the party settings.",
     "errorSaveInvite": "Could not save the invite.",
     "errorDeleteInvite": "Could not delete the invite.",
-    "errorDeleteParty": "Could not delete this party."
+    "errorDeleteParty": "Could not delete this party.",
+    "partySaved": "Party settings saved.",
+    "partyDeleted": "Party deleted.",
+    "inviteCreated": "Invite added.",
+    "inviteSaved": "Invite saved.",
+    "inviteDeleted": "Invite deleted."
   },
   "partyForm": {
     "name": "Name",
@@ -71,7 +78,8 @@
     "save": "Save",
     "create": "Create party",
     "defaultAcceptLabel": "Yes, I will be there",
-    "defaultDeclineLabel": "No, I can't make it"
+    "defaultDeclineLabel": "No, I can't make it",
+    "errorSlugTaken": "This slug is already used by another party."
   },
   "inviteForm": {
     "guestName": "Guest name",
@@ -114,6 +122,12 @@
     "deleteImage": "Delete image",
     "errorLoad": "Could not load images.",
     "errorUpload": "Could not upload the image.",
-    "errorDelete": "Could not delete the image."
+    "errorDelete": "Could not delete the image.",
+    "uploading": "Uploading...",
+    "uploaded": "Image uploaded.",
+    "deleted": "Image deleted."
+  },
+  "toast": {
+    "dismiss": "Dismiss"
   }
 }

@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import FormField from './FormField.vue';
 import IconPlus from './icons/IconPlus.vue';
 import IconSave from './icons/IconSave.vue';
+import IconSpinner from './icons/IconSpinner.vue';
 import IconX from './icons/IconX.vue';
 
 const props = defineProps({
@@ -12,6 +13,8 @@ const props = defineProps({
   isEditMode: { type: Boolean, default: false },
   // Disables the submit button (e.g. MODE=demo, see stores/hostAuth.js).
   disabled: { type: Boolean, default: false },
+  // True while the parent's request is in flight (see PartyForm.vue).
+  busy: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['submit', 'cancel']);
@@ -111,11 +114,15 @@ function handleSubmit() {
       <button
         type="submit"
         class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2 hover:bg-accent/90 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-        :disabled="disabled"
+        :disabled="disabled || busy"
         :title="disabled ? t('demoMode.disabledHint') : undefined"
       >
+        <IconSpinner
+          v-if="busy"
+          class="w-4 h-4"
+        />
         <IconSave
-          v-if="isEditMode"
+          v-else-if="isEditMode"
           class="w-4 h-4"
         />
         <IconPlus

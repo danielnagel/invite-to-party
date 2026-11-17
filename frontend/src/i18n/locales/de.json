@@ -27,7 +27,8 @@
     "expired": "Diese Einladung ist abgelaufen - die Feier hat bereits stattgefunden.",
     "changeAnswerHint": "Du kannst deine Antwort jederzeit vor der Feier ändern.",
     "error": "Deine Antwort konnte nicht gespeichert werden, bitte versuche es erneut.",
-    "partyInfo": "Infos zur Feier"
+    "partyInfo": "Infos zur Feier",
+    "saved": "Deine Antwort wurde gespeichert."
   },
   "guestPreview": {
     "backToAdmin": "Zurück zur Verwaltung",
@@ -40,7 +41,8 @@
     "loading": "Lädt...",
     "empty": "Noch keine Feiern.",
     "errorLoad": "Feiern konnten nicht geladen werden.",
-    "errorCreate": "Die Feier konnte nicht erstellt werden."
+    "errorCreate": "Die Feier konnte nicht erstellt werden.",
+    "created": "Feier erstellt."
   },
   "hostPartyDetail": {
     "backToParties": "Zurück zu den Feiern",
@@ -57,7 +59,12 @@
     "errorSaveParty": "Die Feiereinstellungen konnten nicht gespeichert werden.",
     "errorSaveInvite": "Die Einladung konnte nicht gespeichert werden.",
     "errorDeleteInvite": "Die Einladung konnte nicht gelöscht werden.",
-    "errorDeleteParty": "Diese Feier konnte nicht gelöscht werden."
+    "errorDeleteParty": "Diese Feier konnte nicht gelöscht werden.",
+    "partySaved": "Feiereinstellungen gespeichert.",
+    "partyDeleted": "Feier gelöscht.",
+    "inviteCreated": "Einladung hinzugefügt.",
+    "inviteSaved": "Einladung gespeichert.",
+    "inviteDeleted": "Einladung gelöscht."
   },
   "partyForm": {
     "name": "Name",
@@ -71,7 +78,8 @@
     "save": "Speichern",
     "create": "Feier erstellen",
     "defaultAcceptLabel": "Ja, ich komme",
-    "defaultDeclineLabel": "Nein, ich kann leider nicht"
+    "defaultDeclineLabel": "Nein, ich kann leider nicht",
+    "errorSlugTaken": "Dieser Slug wird bereits von einer anderen Feier verwendet."
   },
   "inviteForm": {
     "guestName": "Name des Gasts",
@@ -114,6 +122,12 @@
     "deleteImage": "Bild löschen",
     "errorLoad": "Bilder konnten nicht geladen werden.",
     "errorUpload": "Das Bild konnte nicht hochgeladen werden.",
-    "errorDelete": "Das Bild konnte nicht gelöscht werden."
+    "errorDelete": "Das Bild konnte nicht gelöscht werden.",
+    "uploading": "Wird hochgeladen...",
+    "uploaded": "Bild hochgeladen.",
+    "deleted": "Bild gelöscht."
+  },
+  "toast": {
+    "dismiss": "Schließen"
   }
 }

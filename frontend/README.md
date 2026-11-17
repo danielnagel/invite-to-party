@@ -74,7 +74,13 @@ on port 3000 (`npm run dev --workspace=backend`).
   or edit a guest invite (name, greeting text, additional named guests) and
   list all of a party's invites with their live status.
 - **`components/FormField.vue`** – generic label+input/textarea/checkbox.
-- **`components/ConfirmDialog.vue`** – generic delete confirmation dialog.
+- **`components/ConfirmDialog.vue`** – generic delete confirmation dialog
+  (`busy` prop disables the confirm button while the request runs).
+- **`stores/toast.js`** (Pinia) / **`components/ToastContainer.vue`** –
+  global success/error toasts confirming every mutating action (save,
+  create, delete, upload, RSVP). Global so a toast survives navigation (e.g.
+  after deleting a party). `PartyForm`/`InviteForm` take a `busy` prop that
+  disables submit and shows a spinner while the request is in flight.
 - **`components/AppHeader.vue`** / **`components/AppFooter.vue`** – logo,
   visible on desktop/mobile respectively; logout button shown only once a
   host is logged in.

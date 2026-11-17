@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from 'pinia';
 
 import GuestView from './GuestView.vue';
 import { useGuestSessionStore } from '../stores/guestSession';
+import { useToastStore } from '../stores/toast';
 import i18n from '../i18n';
 
 const { apiClient } = vi.hoisted(() => ({
@@ -111,5 +112,28 @@ describe('GuestView', () => {
     await fireEvent.click(acceptButtons[1]);
 
     expect(apiClient.post).toHaveBeenCalledWith('/invites/abc123/guests/guest-1/rsvp', { status: 'accepted' });
+  });
+
+  it('confirms a saved answer with a success toast', async () => {
+    apiClient.post.mockResolvedValueOnce({ status: 'accepted', expired: false });
+    seedGuestSession();
+    render(GuestView, { global: { plugins: [i18n] } });
+
+    await fireEvent.click(screen.getByRole('button', { name: 'Yes, count me in' }));
+    await vi.waitFor(() => {
+      expect(useToastStore().toasts).toEqual([
+        expect.objectContaining({ type: 'success', message: 'Your answer has been saved.' }),
+      ]);
+    });
+  });
+
+  it('does not claim to have saved an answer in the host preview', async () => {
+    seedGuestSession({ isPreview: true });
+    render(GuestView, { global: { plugins: [i18n] } });
+
+    await fireEvent.click(screen.getByRole('button', { name: 'Yes, count me in' }));
+
+    expect(apiClient.post).not.toHaveBeenCalled();
+    expect(useToastStore().toasts).toEqual([]);
   });
 });

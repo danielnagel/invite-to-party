@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import FormField from './FormField.vue';
 import IconPlus from './icons/IconPlus.vue';
 import IconSave from './icons/IconSave.vue';
+import IconSpinner from './icons/IconSpinner.vue';
 
 const props = defineProps({
   initialData: { type: Object, default: () => ({}) },
@@ -12,6 +13,9 @@ const props = defineProps({
   // Disables the submit button (e.g. MODE=demo, see stores/hostAuth.js).
   // Fields stay editable so a demo host can still see how the form behaves.
   disabled: { type: Boolean, default: false },
+  // True while the parent's request is in flight: blocks double submits and
+  // shows a spinner so the host sees the server is working on it.
+  busy: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['submit']);
@@ -90,11 +94,15 @@ function handleSubmit() {
     <button
       type="submit"
       class="flex items-center gap-2 bg-accent text-primary rounded px-4 py-2 self-start hover:bg-accent/90 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-      :disabled="disabled"
+      :disabled="disabled || busy"
       :title="disabled ? t('demoMode.disabledHint') : undefined"
     >
+      <IconSpinner
+        v-if="busy"
+        class="w-4 h-4"
+      />
       <IconSave
-        v-if="isEditMode"
+        v-else-if="isEditMode"
         class="w-4 h-4"
       />
       <IconPlus

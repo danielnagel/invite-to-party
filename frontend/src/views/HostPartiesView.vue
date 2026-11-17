@@ -4,16 +4,19 @@ import { useI18n } from 'vue-i18n';
 
 import { apiClient } from '../api/client';
 import { useHostAuthStore } from '../stores/hostAuth';
+import { useToastStore } from '../stores/toast';
 import PartyForm from '../components/PartyForm.vue';
 import IconArrowRight from '../components/icons/IconArrowRight.vue';
 
 const { t, locale } = useI18n();
 const hostAuth = useHostAuthStore();
+const toast = useToastStore();
 
 const parties = ref([]);
 const isLoading = ref(false);
 const errorMessage = ref('');
 const formResetKey = ref(0);
+const isCreating = ref(false);
 
 async function loadParties() {
   isLoading.value = true;
@@ -28,13 +31,16 @@ async function loadParties() {
 }
 
 async function handleCreate(data) {
-  errorMessage.value = '';
+  isCreating.value = true;
   try {
     await apiClient.post('/parties', data);
     formResetKey.value += 1;
+    toast.success(t('hostParties.created'));
     await loadParties();
-  } catch {
-    errorMessage.value = t('hostParties.errorCreate');
+  } catch (error) {
+    toast.error(error.status === 409 ? t('partyForm.errorSlugTaken') : t('hostParties.errorCreate'));
+  } finally {
+    isCreating.value = false;
   }
 }
 
@@ -70,6 +76,7 @@ onMounted(loadParties);
       <PartyForm
         :key="formResetKey"
         :disabled="hostAuth.demoMode"
+        :busy="isCreating"
         @submit="handleCreate"
       />
     </section>

@@ -224,6 +224,16 @@ describe('GET /api/invites/lookup (public)', () => {
     expect(response.body.party.slug).toBe('summer-party-lookup');
   });
 
+  it('includes the party-wide info text', async () => {
+    const party = await insertParty({ slug: 'info-lookup', info_text: 'Dress code: white' });
+    const invite = await insertInvite({ partyId: party.id, invite_code: 'INFO1234' });
+
+    const response = await request(app).get('/api/invites/lookup').query({ code: invite.invite_code });
+
+    expect(response.status).toBe(200);
+    expect(response.body.party.info_text).toBe('Dress code: white');
+  });
+
   it('includes additional guests', async () => {
     const party = await insertParty({ slug: 'group-lookup' });
     const invite = await insertInvite({ partyId: party.id, invite_code: 'GRUP1234', guest_name: 'Alice' });

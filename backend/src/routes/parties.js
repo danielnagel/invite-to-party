@@ -12,13 +12,21 @@ const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 const PARTY_COLUMNS = `id, name, slug, event_date, accept_label, decline_label,
-  created_at, updated_at`;
+  info_text, created_at, updated_at`;
 
 // Mirrors the column defaults in migrations/*_create-parties.js. Applied in
 // JS (rather than relying on the DB's DEFAULT) because "DEFAULT" is only
 // valid as a literal in an INSERT VALUES list, not as a COALESCE argument.
 const DEFAULT_ACCEPT_LABEL = 'Accept';
 const DEFAULT_DECLINE_LABEL = 'Decline';
+
+// Blank/whitespace-only info is stored as NULL so "no info" has exactly one
+// representation (the guest page hides the block entirely in that case).
+function normalizeInfoText(value) {
+  if (value === undefined || value === null) return null;
+  const text = String(value);
+  return text.trim() ? text : null;
+}
 
 function isValidPartyInput({ name, slug, event_date: eventDate }) {
   if (!name || !String(name).trim()) return false;
@@ -83,6 +91,7 @@ router.get('/parties/:id/preview', requireAuth, async (req, res) => {
       event_date: party.event_date,
       accept_label: party.accept_label,
       decline_label: party.decline_label,
+      info_text: party.info_text,
     },
   });
 });
@@ -96,8 +105,8 @@ router.post('/parties', requireAuth, blockInDemoMode, async (req, res) => {
 
   try {
     const { rows } = await pool.query(
-      `INSERT INTO parties (name, slug, event_date, accept_label, decline_label)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO parties (name, slug, event_date, accept_label, decline_label, info_text)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING ${PARTY_COLUMNS}`,
       [
         body.name,
@@ -105,6 +114,7 @@ router.post('/parties', requireAuth, blockInDemoMode, async (req, res) => {
         body.event_date,
         body.accept_label ?? DEFAULT_ACCEPT_LABEL,
         body.decline_label ?? DEFAULT_DECLINE_LABEL,
+        normalizeInfoText(body.info_text),
       ],
     );
     return res.status(201).json(rows[0]);
@@ -131,8 +141,12 @@ router.put('/parties/:id', requireAuth, blockInDemoMode, async (req, res) => {
            event_date = $3,
            accept_label = COALESCE($4, accept_label),
            decline_label = COALESCE($5, decline_label),
+           -- Unlike the labels, info_text can be cleared on purpose, so
+           -- COALESCE can't tell "omitted" from "emptied" - $7 flags
+           -- whether the field was sent at all.
+           info_text = CASE WHEN $7::boolean THEN $6 ELSE info_text END,
            updated_at = now()
-       WHERE id = $6
+       WHERE id = $8
        RETURNING ${PARTY_COLUMNS}`,
       [
         body.name,
@@ -140,6 +154,8 @@ router.put('/parties/:id', requireAuth, blockInDemoMode, async (req, res) => {
         body.event_date,
         body.accept_label ?? null,
         body.decline_label ?? null,
+        normalizeInfoText(body.info_text),
+        body.info_text !== undefined,
         req.params.id,
       ],
     );

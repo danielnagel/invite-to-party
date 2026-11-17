@@ -26,7 +26,8 @@
     "hello": "Hello {name}",
     "expired": "This invite has expired - the party already took place.",
     "changeAnswerHint": "You can change your answer any time before the party.",
-    "error": "Could not save your answer, please try again."
+    "error": "Could not save your answer, please try again.",
+    "partyInfo": "About the party"
   },
   "guestPreview": {
     "backToAdmin": "Back to admin",
@@ -63,6 +64,8 @@
     "slug": "Slug",
     "slugHint": "Vanity URL, e.g. 'wedding'. Lowercase letters, digits and hyphens only.",
     "eventDate": "Event date",
+    "infoText": "Info for all guests",
+    "infoTextHint": "Shown to every guest on their invite, e.g. schedule, directions or dress code.",
     "acceptLabel": "Accept label",
     "declineLabel": "Decline label",
     "save": "Save",

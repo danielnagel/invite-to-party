@@ -61,6 +61,20 @@ async function respondGuest(guestId, status) {
         </p>
       </div>
 
+      <!-- Party-wide info (same for every guest), shown regardless of RSVP
+           or expiry state so guests can always look up the schedule. -->
+      <section
+        v-if="guestSession.party.info_text"
+        class="border-t border-primary/10 pt-4"
+      >
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-primary/70">
+          {{ t('guest.partyInfo') }}
+        </h2>
+        <p class="mt-2 whitespace-pre-line">
+          {{ guestSession.party.info_text }}
+        </p>
+      </section>
+
       <p
         v-if="guestSession.expired"
         class="text-primary/70"

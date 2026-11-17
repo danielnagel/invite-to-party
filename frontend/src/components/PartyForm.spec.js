@@ -19,6 +19,7 @@ describe('PartyForm', () => {
     await fireEvent.update(screen.getByLabelText(/^Name/), 'Summer Party');
     await fireEvent.update(screen.getByLabelText(/^Slug/), 'summer-party');
     await fireEvent.update(screen.getByLabelText(/^Event date/), '2026-08-01');
+    await fireEvent.update(screen.getByLabelText(/^Info for all guests/), 'Doors open at 7 pm');
     await fireEvent.click(screen.getByRole('button', { name: 'Create party' }));
 
     expect(emitted().submit).toHaveLength(1);
@@ -27,6 +28,7 @@ describe('PartyForm', () => {
         name: 'Summer Party',
         slug: 'summer-party',
         event_date: '2026-08-01',
+        info_text: 'Doors open at 7 pm',
       }),
     );
   });

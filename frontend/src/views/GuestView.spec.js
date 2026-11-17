@@ -51,6 +51,22 @@ describe('GuestView', () => {
     expect(screen.getByText('So happy you can join us!')).toBeInTheDocument();
   });
 
+  it('shows the party-wide info text when the party has one', () => {
+    const store = seedGuestSession();
+    store.party = { ...store.party, info_text: 'Doors open at 7 pm' };
+    render(GuestView, { global: { plugins: [i18n] } });
+
+    expect(screen.getByText('About the party')).toBeInTheDocument();
+    expect(screen.getByText('Doors open at 7 pm')).toBeInTheDocument();
+  });
+
+  it('hides the party info block when the party has no info text', () => {
+    seedGuestSession();
+    render(GuestView, { global: { plugins: [i18n] } });
+
+    expect(screen.queryByText('About the party')).not.toBeInTheDocument();
+  });
+
   it('submits the accept response with the party-specific label', async () => {
     apiClient.post.mockResolvedValueOnce({ status: 'accepted', expired: false });
     seedGuestSession();

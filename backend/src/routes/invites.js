@@ -206,7 +206,7 @@ router.get('/invites/lookup', publicRateLimiter, async (req, res) => {
   const { rows } = await pool.query(
     `SELECT i.id, i.invite_code, i.guest_name, i.greeting_text, i.status,
             p.id AS party_id, p.name AS party_name, p.slug AS party_slug,
-            p.event_date, p.accept_label, p.decline_label,
+            p.event_date, p.accept_label, p.decline_label, p.info_text,
             (p.event_date < CURRENT_DATE) AS expired
      FROM invites i
      JOIN parties p ON p.id = i.party_id
@@ -238,6 +238,7 @@ router.get('/invites/lookup', publicRateLimiter, async (req, res) => {
       event_date: row.event_date,
       accept_label: row.accept_label,
       decline_label: row.decline_label,
+      info_text: row.info_text,
     },
   });
 });

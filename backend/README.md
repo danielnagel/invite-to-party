@@ -94,9 +94,9 @@ access until the token expires (12h).
 | Method | Path | Description |
 | --- | --- | --- |
 | `GET` | `/api/parties` | List all parties. |
-| `POST` | `/api/parties` | Create a party. Required: `name`, `slug` (lowercase, `a-z0-9-`, unique), `event_date` (`YYYY-MM-DD`, doubles as the invite expiry). Optional: `accept_label`, `decline_label` (default `Accept`/`Decline`). |
+| `POST` | `/api/parties` | Create a party. Required: `name`, `slug` (lowercase, `a-z0-9-`, unique), `event_date` (`YYYY-MM-DD`, doubles as the invite expiry). Optional: `accept_label`, `decline_label` (default `Accept`/`Decline`), `info_text` (party-wide info shown to every guest, e.g. schedule; blank is stored as `null`). |
 | `GET` | `/api/parties/:id` | Load a single party. |
-| `PUT` | `/api/parties/:id` | Update a party (same required fields as create; omitted optional labels keep their current value). |
+| `PUT` | `/api/parties/:id` | Update a party (same required fields as create; omitted optional labels/`info_text` keep their current value; `info_text` sent as `""`/`null` clears it). |
 | `DELETE` | `/api/parties/:id` | Delete a party (cascades to its images/invites; uploaded files are removed from disk too). |
 | `GET` | `/api/parties/:id/images` | List uploaded images for a party. |
 | `POST` | `/api/parties/:id/images` | Upload an image (multipart field `image`; `image/jpeg`, `image/png`, `image/webp`, `image/gif`; max 8 MB). Stored at `UPLOADS_DIR/parties/<id>/<uuid>.<ext>`. |
@@ -110,7 +110,7 @@ access until the token expires (12h).
 | `POST` | `/api/parties/:id/invites` | host | Create an invite. Required: `guest_name`. Optional: `greeting_text`, `additional_guests` (array of names for a group invite). Generates a unique 8-character `invite_code`. |
 | `PUT` | `/api/invites/:id` | host | Update `guest_name`/`greeting_text`/`additional_guests` (not the RSVP status - that's guest-only). |
 | `DELETE` | `/api/invites/:id` | host | Delete an invite. |
-| `GET` | `/api/invites/lookup?code=` | public, rate-limited | Resolves an invite by code (case-insensitive). Returns guest name/greeting/status plus the party's RSVP labels, and an `expired` flag (`event_date < today`). `404` if the code doesn't exist. |
+| `GET` | `/api/invites/lookup?code=` | public, rate-limited | Resolves an invite by code (case-insensitive). Returns guest name/greeting/status plus the party's RSVP labels and `info_text`, and an `expired` flag (`event_date < today`). `404` if the code doesn't exist. |
 | `POST` | `/api/invites/:code/rsvp` | public, rate-limited | Body `{ status: "accepted"|"declined" }`. Resubmittable any number of times until the party expires; `410` once expired. Stays open in demo mode. |
 
 ### Images (`/api/images`)

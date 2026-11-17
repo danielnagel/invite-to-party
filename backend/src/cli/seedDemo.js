@@ -28,6 +28,7 @@ const DEMO_PARTIES = [
     event_date: isoDate(30),
     accept_label: "I'll be there!",
     decline_label: "Can't make it",
+    info_text: 'Doors open at 7 pm, food from 8 pm.\nBring a jacket - it gets windy up there!',
     images: ['party-1.png', 'party-2.png'],
     invites: [
       { guest_name: 'Alice Anderson', greeting_text: 'So glad you can join us!', status: 'pending' },
@@ -77,8 +78,8 @@ async function seedImage(partyId, assetFilename) {
 
 async function seedParty(party) {
   const { rows } = await pool.query(
-    `INSERT INTO parties (name, slug, event_date, accept_label, decline_label)
-     VALUES ($1, $2, $3, $4, $5)
+    `INSERT INTO parties (name, slug, event_date, accept_label, decline_label, info_text)
+     VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING id`,
     [
       party.name,
@@ -86,6 +87,7 @@ async function seedParty(party) {
       party.event_date,
       party.accept_label,
       party.decline_label,
+      party.info_text ?? null,
     ],
   );
   const partyId = rows[0].id;

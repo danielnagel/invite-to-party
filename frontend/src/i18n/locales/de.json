@@ -26,7 +26,8 @@
     "hello": "Hallo {name}",
     "expired": "Diese Einladung ist abgelaufen - die Feier hat bereits stattgefunden.",
     "changeAnswerHint": "Du kannst deine Antwort jederzeit vor der Feier ändern.",
-    "error": "Deine Antwort konnte nicht gespeichert werden, bitte versuche es erneut."
+    "error": "Deine Antwort konnte nicht gespeichert werden, bitte versuche es erneut.",
+    "partyInfo": "Infos zur Feier"
   },
   "guestPreview": {
     "backToAdmin": "Zurück zur Verwaltung",
@@ -63,6 +64,8 @@
     "slug": "Slug",
     "slugHint": "Eigene URL, z. B. 'hochzeit'. Nur Kleinbuchstaben, Ziffern und Bindestriche.",
     "eventDate": "Datum der Feier",
+    "infoText": "Infos für alle Gäste",
+    "infoTextHint": "Wird jedem Gast auf seiner Einladung angezeigt, z. B. Ablauf, Anfahrt oder Dresscode.",
     "acceptLabel": "Zusage-Beschriftung",
     "declineLabel": "Absage-Beschriftung",
     "save": "Speichern",

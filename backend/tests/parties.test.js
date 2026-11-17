@@ -48,6 +48,26 @@ describe('POST /api/parties', () => {
     expect(response.body.accept_label).toBe("We'll be there");
   });
 
+  it('stores the optional party-wide info text, null when omitted', async () => {
+    const { agent } = await createAndLoginHost();
+
+    const withInfo = await agent.post('/api/parties').send({
+      name: 'Wedding',
+      slug: 'wedding-info',
+      event_date: '2099-06-01',
+      info_text: 'Ceremony at 2 pm\nDinner at 6 pm',
+    });
+    const withoutInfo = await agent.post('/api/parties').send({
+      name: 'BBQ',
+      slug: 'bbq-no-info',
+      event_date: '2099-06-01',
+    });
+
+    expect(withInfo.status).toBe(201);
+    expect(withInfo.body.info_text).toBe('Ceremony at 2 pm\nDinner at 6 pm');
+    expect(withoutInfo.body.info_text).toBeNull();
+  });
+
   it('rejects a missing name', async () => {
     const { agent } = await createAndLoginHost();
 
@@ -148,6 +168,15 @@ describe('GET /api/parties/:id/preview', () => {
     expect(response.body.party.accept_label).toBe("We'll be there");
   });
 
+  it('includes the party-wide info text', async () => {
+    const { agent } = await createAndLoginHost();
+    const party = await insertParty({ info_text: 'Doors open at 7 pm' });
+
+    const response = await agent.get(`/api/parties/${party.id}/preview`);
+
+    expect(response.body.party.info_text).toBe('Doors open at 7 pm');
+  });
+
   it('flags a past event as expired', async () => {
     const { agent } = await createAndLoginHost();
     const party = await insertParty({ event_date: '2000-01-01' });
@@ -183,6 +212,21 @@ describe('PUT /api/parties/:id', () => {
     expect(response.body.slug).toBe('new-slug');
     // Omitted labels keep their existing values instead of being wiped.
     expect(response.body.accept_label).toBe('Accept');
+  });
+
+  it('keeps info_text when omitted, but clears it when sent empty', async () => {
+    const { agent } = await createAndLoginHost();
+    const party = await insertParty({ slug: 'info-party', info_text: 'Bring snacks' });
+    const base = { name: 'Name', slug: 'info-party', event_date: '2099-07-01' };
+
+    const omitted = await agent.put(`/api/parties/${party.id}`).send(base);
+    expect(omitted.body.info_text).toBe('Bring snacks');
+
+    const updated = await agent.put(`/api/parties/${party.id}`).send({ ...base, info_text: 'Bring drinks' });
+    expect(updated.body.info_text).toBe('Bring drinks');
+
+    const cleared = await agent.put(`/api/parties/${party.id}`).send({ ...base, info_text: '   ' });
+    expect(cleared.body.info_text).toBeNull();
   });
 
   it('returns 404 for an unknown party', async () => {

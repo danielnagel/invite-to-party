@@ -24,6 +24,7 @@ function emptyForm() {
     event_date: '',
     accept_label: t('partyForm.defaultAcceptLabel'),
     decline_label: t('partyForm.defaultDeclineLabel'),
+    info_text: '',
   };
 }
 
@@ -68,6 +69,13 @@ function handleSubmit() {
       :label="t('partyForm.eventDate')"
       type="date"
       required
+    />
+    <FormField
+      id="info_text"
+      v-model="form.info_text"
+      :label="t('partyForm.infoText')"
+      type="textarea"
+      :hint="t('partyForm.infoTextHint')"
     />
     <FormField
       id="accept_label"

@@ -45,7 +45,8 @@ on port 3000 (`npm run dev --workspace=backend`).
   guest type one in. Checks that the resolved party's slug matches the URL,
   rejecting codes that belong to a different party.
 - **`views/GuestView.vue`** – greets the guest, shows the optional
-  greeting text, accept/decline buttons with the party's own labels,
+  greeting text, the party-wide info text (same for every guest, always
+  visible - also after expiry), accept/decline buttons with the party's own labels,
   resubmittable until the party's `event_date` passes, after which a plain
   expired message replaces the form.
 - **`views/HostLoginView.vue`** – host login form.
@@ -63,7 +64,8 @@ on port 3000 (`npm run dev --workspace=backend`).
   background-position: center` – static, no zoom animation. Falls back to
   the neutral color if the party (or, for a host, all of their parties) has
   no uploaded images.
-- **`components/PartyForm.vue`** – name, slug, event date, RSVP labels;
+- **`components/PartyForm.vue`** – name, slug, event date, party-wide
+  info text for all guests, RSVP labels;
   reused for both create and edit.
 - **`components/ImageGallery.vue`** – thumbnail grid with per-image delete
   and a file input for upload; self-contained (fetches/refetches its own

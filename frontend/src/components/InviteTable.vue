@@ -119,6 +119,12 @@ async function copyGuestUrl(invite) {
               />
               {{ copiedInviteId === invite.id ? t('inviteTable.copied') : t('inviteTable.copyLink') }}
             </button>
+            <router-link
+              :to="{ path: `/parties/${invite.party_id}/preview`, query: { invite: invite.id } }"
+              class="underline text-sm hover:text-accent"
+            >
+              {{ t('inviteTable.preview') }}
+            </router-link>
             <button
               type="button"
               class="underline text-sm hover:text-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline disabled:hover:text-inherit"

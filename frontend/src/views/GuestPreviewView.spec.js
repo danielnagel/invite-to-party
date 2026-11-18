@@ -5,7 +5,8 @@ import { createPinia, setActivePinia } from 'pinia';
 import GuestPreviewView from './GuestPreviewView.vue';
 import i18n from '../i18n';
 
-const { apiClient } = vi.hoisted(() => ({
+const { apiClient, mockRoute } = vi.hoisted(() => ({
+  mockRoute: { params: { id: 'party-1' }, query: {} },
   apiClient: {
     get: vi.fn(),
     post: vi.fn(),
@@ -20,7 +21,7 @@ vi.mock('vue-router', async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...actual,
-    useRoute: () => ({ params: { id: 'party-1' } }),
+    useRoute: () => mockRoute,
   };
 });
 
@@ -53,6 +54,16 @@ describe('GuestPreviewView', () => {
     setActivePinia(createPinia());
     apiClient.get.mockReset();
     apiClient.post.mockReset();
+    mockRoute.query = {};
+  });
+
+  it('loads a specific invite when ?invite is given', async () => {
+    mockRoute.query = { invite: 'invite-1' };
+    apiClient.get.mockResolvedValueOnce(previewResponse({ guest_name: 'Alice' }));
+    render(GuestPreviewView, { global: { stubs: globalStubs, plugins: [i18n] } });
+
+    await waitFor(() => expect(apiClient.get).toHaveBeenCalledWith('/invites/invite-1/preview'));
+    expect(await screen.findByText('Hello Alice')).toBeInTheDocument();
   });
 
   it('loads the party preview and renders the guest RSVP page', async () => {

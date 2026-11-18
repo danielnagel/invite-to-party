@@ -203,6 +203,44 @@ describe('DELETE /api/invites/:id', () => {
   });
 });
 
+describe('GET /api/invites/:id/preview', () => {
+  it('returns the guest-facing payload of that specific invite', async () => {
+    const { agent } = await createAndLoginHost();
+    const party = await insertParty({ slug: 'preview-invite' });
+    const invite = await insertInvite({
+      partyId: party.id,
+      guest_name: 'Alice',
+      greeting_text: 'Hi Alice!',
+    });
+    await insertInviteGuest({ inviteId: invite.id, name: 'Bob' });
+
+    const response = await agent.get(`/api/invites/${invite.id}/preview`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.guest_name).toBe('Alice');
+    expect(response.body.greeting_text).toBe('Hi Alice!');
+    expect(response.body.guests).toEqual([expect.objectContaining({ name: 'Bob', status: 'pending' })]);
+    expect(response.body.party.id).toBe(party.id);
+  });
+
+  it('requires a host session', async () => {
+    const party = await insertParty({ slug: 'preview-noauth' });
+    const invite = await insertInvite({ partyId: party.id });
+
+    const response = await request(app).get(`/api/invites/${invite.id}/preview`);
+
+    expect(response.status).toBe(401);
+  });
+
+  it('returns 404 for an unknown invite', async () => {
+    const { agent } = await createAndLoginHost();
+
+    const response = await agent.get('/api/invites/00000000-0000-0000-0000-000000000000/preview');
+
+    expect(response.status).toBe(404);
+  });
+});
+
 describe('GET /api/invites/lookup (public)', () => {
   it('resolves an invite by code without needing auth', async () => {
     const party = await insertParty({

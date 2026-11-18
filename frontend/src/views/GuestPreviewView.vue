@@ -10,13 +10,16 @@ import IconArrowLeft from '../components/icons/IconArrowLeft.vue';
 const route = useRoute();
 const guestSession = useGuestSessionStore();
 const partyId = route.params.id;
+// Optional ?invite=<invite id>: preview the page exactly as that invite's
+// guest sees it (name, greeting, additional guests, current answers).
+const inviteId = route.query.invite ?? null;
 const { t } = useI18n();
 
 const errorMessage = ref('');
 
 onMounted(async () => {
   try {
-    await guestSession.loadPreview(partyId);
+    await guestSession.loadPreview(partyId, inviteId);
   } catch {
     errorMessage.value = t('guestPreview.error');
   }

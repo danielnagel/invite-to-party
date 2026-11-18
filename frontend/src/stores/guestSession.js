@@ -38,11 +38,15 @@ export const useGuestSessionStore = defineStore('guestSession', {
 
     /**
      * Lets a host see the guest RSVP page for a party without a real invite
-     * code (see GET /parties/:id/preview). respond() below skips the network
-     * call while this is active, since there's no invite behind it to save to.
+     * code - either generic (GET /parties/:id/preview) or as one specific
+     * invite's guest sees it (GET /invites/:id/preview). respond() below
+     * skips the network call while this is active, so inspecting a guest's
+     * page never changes their answers.
      */
-    async loadPreview(partyId) {
-      const data = await apiClient.get(`/parties/${partyId}/preview`);
+    async loadPreview(partyId, inviteId = null) {
+      const data = await apiClient.get(
+        inviteId ? `/invites/${inviteId}/preview` : `/parties/${partyId}/preview`,
+      );
       this.code = null;
       this.guestName = data.guest_name;
       this.greetingText = data.greeting_text;

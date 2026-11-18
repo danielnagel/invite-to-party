@@ -194,15 +194,10 @@ router.delete('/invites/:id', requireAuth, blockInDemoMode, async (req, res) => 
   return res.status(204).send();
 });
 
-// --- Public, guest-facing -------------------------------------------------
-
-router.get('/invites/lookup', publicRateLimiter, async (req, res) => {
-  const { code } = req.query;
-
-  if (!code) {
-    return res.status(400).json({ error: 'code_required' });
-  }
-
+// Builds the guest-facing payload (party + invite + additional guests) for
+// the invite matching `column = value`, or null if there's none. Shared by
+// the public code lookup and the host's per-invite preview.
+async function fetchGuestPayload(column, value) {
   const { rows } = await pool.query(
     `SELECT i.id, i.invite_code, i.guest_name, i.greeting_text, i.status,
             p.id AS party_id, p.name AS party_name, p.slug AS party_slug,
@@ -210,17 +205,15 @@ router.get('/invites/lookup', publicRateLimiter, async (req, res) => {
             (p.event_date < CURRENT_DATE) AS expired
      FROM invites i
      JOIN parties p ON p.id = i.party_id
-     WHERE i.invite_code = $1`,
-    [String(code).toUpperCase()],
+     WHERE i.${column} = $1`,
+    [value],
   );
 
-  if (rows.length === 0) {
-    return res.status(404).json({ error: 'invite_not_found' });
-  }
+  if (rows.length === 0) return null;
 
   const row = rows[0];
   const guestsByInvite = await fetchGuestsForInvites([row.id]);
-  return res.status(200).json({
+  return {
     invite_code: row.invite_code,
     guest_name: row.guest_name,
     greeting_text: row.greeting_text,
@@ -240,7 +233,35 @@ router.get('/invites/lookup', publicRateLimiter, async (req, res) => {
       decline_label: row.decline_label,
       info_text: row.info_text,
     },
-  });
+  };
+}
+
+// Lets a host inspect one specific guest's RSVP page (greeting, additional
+// guests, current answers) without using the invite code - so previewing
+// can never be mistaken for the guest's own visit. Same shape as
+// GET /invites/lookup.
+router.get('/invites/:id/preview', requireAuth, async (req, res) => {
+  const payload = await fetchGuestPayload('id', req.params.id);
+  if (!payload) {
+    return res.status(404).json({ error: 'invite_not_found' });
+  }
+  return res.status(200).json(payload);
+});
+
+// --- Public, guest-facing -------------------------------------------------
+
+router.get('/invites/lookup', publicRateLimiter, async (req, res) => {
+  const { code } = req.query;
+
+  if (!code) {
+    return res.status(400).json({ error: 'code_required' });
+  }
+
+  const payload = await fetchGuestPayload('invite_code', String(code).toUpperCase());
+  if (!payload) {
+    return res.status(404).json({ error: 'invite_not_found' });
+  }
+  return res.status(200).json(payload);
 });
 
 router.post('/invites/:code/rsvp', publicRateLimiter, async (req, res) => {

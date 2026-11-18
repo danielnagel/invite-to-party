@@ -1,9 +1,10 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import IconCopy from './icons/IconCopy.vue';
 import IconCheck from './icons/IconCheck.vue';
+import IconChat from './icons/IconChat.vue';
 
 const props = defineProps({
   invites: { type: Array, default: () => [] },
@@ -26,6 +27,32 @@ const guestCount = computed(() =>
 
 const copiedInviteId = ref(null);
 let copiedTimeout = null;
+
+// Greeting popover: opens on hover (desktop) and on click/tap (touch devices
+// have no hover); closes on leave, blur, Escape or any scroll. Teleported to
+// <body> and positioned `fixed` from the trigger's rect: the table's
+// overflow-x-auto wrapper would clip it, and ancestors with backdrop-blur
+// become the containing block for `fixed`, shifting it away from the icon.
+const openGreetingId = ref(null);
+const greetingPos = ref({ top: 0, left: 0 });
+
+function openGreeting(invite, event) {
+  const rect = event.currentTarget.getBoundingClientRect();
+  greetingPos.value = { top: rect.bottom + 4, left: rect.left };
+  openGreetingId.value = invite.id;
+}
+
+function closeGreeting() {
+  openGreetingId.value = null;
+}
+
+// Capture phase also catches scrolling of inner containers (e.g. the table
+// wrapper), since scroll events don't bubble.
+watch(openGreetingId, (id) => {
+  if (id === null) window.removeEventListener('scroll', closeGreeting, true);
+  else window.addEventListener('scroll', closeGreeting, { capture: true, passive: true });
+});
+onBeforeUnmount(() => window.removeEventListener('scroll', closeGreeting, true));
 
 function statusLabel(status) {
   return t(`inviteStatus.${status}`);
@@ -84,7 +111,37 @@ async function copyGuestUrl(invite) {
         >
           <td class="px-3 py-2">
             <div class="flex flex-col gap-1">
-              <span>{{ invite.guest_name }}</span>
+              <span class="flex items-center gap-1.5">
+                {{ invite.guest_name }}
+                <span
+                  v-if="invite.greeting_text"
+                  class="inline-flex"
+                  @mouseenter="openGreeting(invite, $event)"
+                  @mouseleave="openGreetingId = null"
+                >
+                  <button
+                    type="button"
+                    class="text-primary/60 hover:text-accent cursor-pointer"
+                    :aria-label="t('inviteTable.greetingText')"
+                    :aria-expanded="openGreetingId === invite.id"
+                    data-testid="greeting-toggle"
+                    @click="openGreeting(invite, $event)"
+                    @blur="openGreetingId = null"
+                    @keydown.esc="openGreetingId = null"
+                  >
+                    <IconChat class="w-4 h-4" />
+                  </button>
+                  <Teleport to="body">
+                    <span
+                      v-if="openGreetingId === invite.id"
+                      role="tooltip"
+                      class="fixed z-50 w-64 max-w-[80vw] rounded border border-primary/20 bg-secondary text-primary p-3 text-sm shadow-lg whitespace-pre-line"
+                      :style="{ top: `${greetingPos.top}px`, left: `${greetingPos.left}px` }"
+                      data-testid="greeting-popover"
+                    >{{ invite.greeting_text }}</span>
+                  </Teleport>
+                </span>
+              </span>
               <span
                 v-for="guest in invite.guests"
                 :key="guest.id"
